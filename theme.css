@@ -1,0 +1,25 @@
+/* ZMLS — "gradient path": ink indigo, cobalt and coral; contour-line motif. */
+:root {
+  --bg: #f5f6f7; --surface: #ffffff; --surface-2: #eaebee; --ink: #0b112b; --ink-2: #515569; --ink-3: #616576; --line: #dbdce0;
+  --accent: #2f56d6; --accent-ink: #ffffff; --accent-soft: #e4e9fa; --accent-2: #a8401a; --accent-2-soft: #f3e4df;
+  --good: #1d7a4b; --good-soft: #dcf1e4; --bad: #b42a2a; --bad-soft: #f9e2e0; --warn: #b77800; --warn-soft: #fbefd3; --on-status: #ffffff;
+  --hero-bg: #0d1433; --hero-ink: #f9fbff; --hero-ink-2: #aaadb8; --hero-accent: #8aa6ff;
+  --motif: radial-gradient(circle at 82% 28%, rgba(138,166,255,0.24), transparent 46%), radial-gradient(circle at 12% 88%, rgba(255,154,107,0.16), transparent 42%), repeating-linear-gradient(135deg, transparent 0 38px, rgba(138,166,255,0.07) 38px 39px);
+  --sg-line: #3d435c; --sg-accent: #8aa6ff; --sg-accent-2: #ff9a6b; --sg-node: #141b39; --sg-ink: #f9fbff; --sg-ink-2: #aaadb8;
+  --f-display: "Sora", "IBM Plex Sans", "Segoe UI", sans-serif; --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --f-mono: "IBM Plex Mono", Consolas, monospace;
+  --radius: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --bg: #070b1c; --surface: #0a1029; --surface-2: #19203d; --ink: #f8faff; --ink-2: #b2b4be; --ink-3: #898c9b; --line: #2a304b;
+  --accent: #8aa6ff; --accent-ink: #070b1c; --accent-soft: #212a49; --accent-2: #ff9a6b; --accent-2-soft: #2f2229;
+  --good: #5bd39a; --good-soft: #10301f; --bad: #ff7a7a; --bad-soft: #3a1616; --warn: #f2b84c; --warn-soft: #3a2c10; --on-status: #070b1c;
+  color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #070b1c; --surface: #0a1029; --surface-2: #19203d; --ink: #f8faff; --ink-2: #b2b4be; --ink-3: #898c9b; --line: #2a304b;
+  --accent: #8aa6ff; --accent-ink: #070b1c; --accent-soft: #212a49; --accent-2: #ff9a6b; --accent-2-soft: #2f2229;
+  --good: #5bd39a; --good-soft: #10301f; --bad: #ff7a7a; --bad-soft: #3a1616; --warn: #f2b84c; --warn-soft: #3a2c10; --on-status: #070b1c;
+  color-scheme: dark;
+}

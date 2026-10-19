@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://zmls.zyeemzia.com/sitemap.xml
