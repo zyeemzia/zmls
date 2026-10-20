@@ -9,7 +9,7 @@ TRACK.meta = {
   "pdf": "ZMLS-Book.pdf",
   "storeKey": "zmls.v1",
   "tagline": "From first principles to models in production.",
-  "lead": "A practical, professional machine learning specialization: the maths that matters, problem framing, data preparation, linear models and gradient descent, honest evaluation, trees and boosting, unsupervised learning, recommenders, reinforcement learning, deep learning and transformers, and the MLOps and responsible-ML practice needed to run models in the real world.",
+  "lead": "A practical, professional machine learning specialization: the maths that matters, problem framing, data preparation, linear models and gradient descent, honest evaluation, trees and boosting, unsupervised learning, recommenders, reinforcement learning, deep learning, transformers and foundation models, and the MLOps and responsible-ML practice needed to run models in the real world.",
   "signature": {
     "type": "path",
     "name": "The ZMLS Model Pathway",
@@ -38,10 +38,10 @@ TRACK.meta = {
       "Baseline and linear or logistic model with regularisation tuned by cross-validation",
       "Evaluation plan and results: split design, metrics, threshold choice, calibration and error analysis by segment",
       "Tree-ensemble model (random forest or gradient boosting) with explanation of key drivers",
-      "One unsupervised, recommendation or deep learning component justified for the problem",
+      "One unsupervised, recommendation, deep learning or foundation-model component (for example embeddings for search) justified for the problem",
       "Model comparison sheet with a reasoned final choice",
       "Deployment and monitoring plan: serving pattern, release strategy, drift checks and retraining triggers",
-      "Model card with fairness checks, limitations, privacy and governance notes"
+      "Model card and datasheet with fairness checks, limitations, privacy and governance notes"
     ],
     "rubric": [
       { "criterion": "Framing", "levels": ["Target or metric unclear", "Clear target, metric and baseline", "Decision-linked metric with value estimate and stakeholder sign-off"] },

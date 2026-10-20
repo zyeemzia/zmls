@@ -86,7 +86,7 @@ TRACK.modules.push({
       [
        "Self-supervised learning",
        "Labels created from the data itself",
-       "Pre-training language and image models",
+       "Pre-training language, image and multimodal foundation models",
        "Predict the masked word in a Bangla sentence"
       ],
       [
@@ -98,8 +98,70 @@ TRACK.modules.push({
      ]
     },
     {
-     "type": "flow",
-     "title": "The machine learning workflow",
+     "type": "tree",
+     "title": "A map of machine learning families",
+     "root": {
+      "label": "Machine learning",
+      "children": [
+       {
+        "label": "Supervised",
+        "text": "Labelled examples",
+        "children": [
+         {
+          "label": "Regression"
+         },
+         {
+          "label": "Classification"
+         },
+         {
+          "label": "Ranking"
+         }
+        ]
+       },
+       {
+        "label": "Unsupervised",
+        "text": "No labels",
+        "children": [
+         {
+          "label": "Clustering"
+         },
+         {
+          "label": "Dimensionality reduction"
+         },
+         {
+          "label": "Anomaly detection"
+         }
+        ]
+       },
+       {
+        "label": "Self-supervised",
+        "text": "Labels made from the data",
+        "children": [
+         {
+          "label": "Foundation-model pre-training"
+         }
+        ]
+       },
+       {
+        "label": "Reinforcement",
+        "text": "Actions and rewards",
+        "children": [
+         {
+          "label": "Bandits"
+         },
+         {
+          "label": "Sequential control"
+         }
+        ]
+       }
+      ]
+     },
+     "caption": "The families differ in the feedback the data provides, not in the algorithms alone. Many modern systems combine them: a model pre-trained with self-supervision is then fine-tuned with labels."
+    },
+    {
+     "type": "cycle",
+     "title": "The machine learning life cycle",
+     "center": "ML life cycle",
      "items": [
       {
        "label": "Frame",
@@ -129,7 +191,8 @@ TRACK.modules.push({
        "label": "Monitor",
        "text": "Watch quality and drift, retrain"
       }
-     ]
+     ],
+     "caption": "Monitoring closes the loop: drift, new data or a changed decision sends the team back to framing or data. A model in production is never finished."
     },
     {
      "type": "callout",
@@ -277,6 +340,17 @@ TRACK.modules.push({
        "term": "Reinforcement learning",
        "def": "Learning a policy of actions by trial and error to maximise long-term reward."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "A model is a function learned from examples; use ML when the rules are too many, too fuzzy or too changeable to write by hand.",
+      "Supervised, unsupervised, self-supervised and reinforcement learning differ in the feedback the data gives.",
+      "The life cycle is a loop: frame, collect, prepare, train, evaluate, deploy, monitor and return.",
+      "Framing and data work, not algorithm choice, usually decide success.",
+      "When a rule is known exactly and is stable, a rule beats a model."
      ]
     },
     {
@@ -434,6 +508,40 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "tree",
+     "title": "Which task type fits?",
+     "root": {
+      "label": "What will you predict?",
+      "children": [
+       {
+        "label": "A number",
+        "text": "Regression; forecasting if it unfolds over time"
+       },
+       {
+        "label": "Yes or no",
+        "text": "Binary classification"
+       },
+       {
+        "label": "One of several classes",
+        "text": "Multi-class classification"
+       },
+       {
+        "label": "Several labels at once",
+        "text": "Multi-label classification"
+       },
+       {
+        "label": "An order of items",
+        "text": "Ranking or recommendation"
+       },
+       {
+        "label": "No label exists yet",
+        "text": "Clustering or anomaly detection"
+       }
+      ]
+     },
+     "caption": "Start from the shape of the answer the decision needs. The task type then narrows the sensible losses, metrics and baselines."
+    },
+    {
      "type": "callout",
      "kind": "warning",
      "text": "We often cannot measure what we care about, so we predict a **proxy**. 'Past spending on healthcare' is a poor proxy for 'need for care' if some groups have historically had less access. A model will optimise the proxy faithfully, including its biases. Always write down how the proxy differs from the real goal.",
@@ -459,6 +567,43 @@ TRACK.modules.push({
        "meaning": "If 30% of contacted users would churn but the base rate is 10%, lift = 0.30 ÷ 0.10 = 3: targeting is three times better than random."
       }
      ]
+    },
+    {
+     "type": "matrix",
+     "title": "Where the value comes from: the four outcomes of a churn campaign",
+     "x": "Model flags the customer (no → yes)",
+     "y": "Customer actually churns (no → yes)",
+     "quadrants": [
+      {
+       "title": "False negative (FN)",
+       "items": [
+        "Churner not contacted",
+        "Lost value: cost_missed (0 BDT in the example)"
+       ]
+      },
+      {
+       "title": "True positive (TP)",
+       "items": [
+        "Churner contacted and saved",
+        "Net +1,900 BDT each (2,000 − 100)"
+       ]
+      },
+      {
+       "title": "True negative (TN)",
+       "items": [
+        "Loyal customer left alone",
+        "No cost"
+       ]
+      },
+      {
+       "title": "False positive (FP)",
+       "items": [
+        "Loyal customer contacted",
+        "−100 BDT each"
+       ]
+      }
+     ],
+     "caption": "Only the top-right cell creates value, and every flagged customer costs an action. Moving the threshold shifts customers between cells, which is why the metric must reflect costs and capacity."
     },
     {
      "type": "compare",
@@ -601,6 +746,17 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Frame first: decision, target, unit, timing, metric and baseline, agreed with the decision owner.",
+      "Use only data that exists at the moment the prediction is made.",
+      "Write down how any proxy target differs from the real goal, including who it may under-serve.",
+      "Link model metrics to value: every flagged case costs an action, and only true positives pay back.",
+      "A model that cannot clearly beat a simple baseline is not ready."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -676,7 +832,7 @@ TRACK.modules.push({
    "blocks": [
     {
      "type": "text",
-     "text": "To a model, every example is a list of numbers. A customer becomes `[age, monthly_txns, avg_amount, days_since_login]`; an image becomes thousands of pixel values; a sentence becomes an **embedding** of a few hundred numbers. Linear algebra is the language for working with these lists efficiently."
+     "text": "To a model, every example is a list of numbers. A customer becomes `[age, monthly_txns, avg_amount, days_since_login]`; an image becomes thousands of pixel values; a sentence becomes an **embedding** of a few hundred to a few thousand numbers. Linear algebra is the language for working with these lists efficiently."
     },
     {
      "type": "callout",
@@ -750,6 +906,32 @@ TRACK.modules.push({
        "One learned vector per word, item or user"
       ]
      ]
+    },
+    {
+     "type": "tree",
+     "title": "From scalars to tensors",
+     "root": {
+      "label": "Arrays in ML",
+      "children": [
+       {
+        "label": "Scalar",
+        "text": "One number: a loss value, a learning rate"
+       },
+       {
+        "label": "Vector",
+        "text": "1-D: one customer's features, one embedding"
+       },
+       {
+        "label": "Matrix",
+        "text": "2-D: a dataset (n × d), a layer's weights"
+       },
+       {
+        "label": "Tensor",
+        "text": "3-D and up: a batch of images (batch × height × width × channels)"
+       }
+      ]
+     },
+     "caption": "Every object a model touches is an array of some rank. Most shape errors in practice come from mixing up which axis holds examples and which holds features."
     },
     {
      "type": "formula",
@@ -827,7 +1009,8 @@ TRACK.modules.push({
       "A neural network layer is a matrix multiplication followed by a non-linear function.",
       "Embeddings place words, products or users as vectors; similar items have high cosine similarity.",
       "PCA finds new directions (vectors) that capture the most variance in a matrix.",
-      "GPUs are fast at ML because they are fast at matrix multiplication."
+      "GPUs are fast at ML because they are fast at matrix multiplication.",
+      "Vector search systems store millions of embeddings and use approximate nearest-neighbour indexes to return the most similar ones in milliseconds."
      ],
      "title": "Why linear algebra matters in ML"
     },
@@ -897,6 +1080,16 @@ TRACK.modules.push({
        "term": "Vectorisation",
        "def": "Writing computations as whole-array operations rather than loops, for speed and clarity."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Examples are vectors and datasets are n × d matrices; a linear score is a dot product w · x + b.",
+      "In a matrix product the inner dimensions must match: (n × d)(d × k) gives (n × k).",
+      "Cosine similarity compares direction and suits embeddings; Euclidean distance compares position and needs scaled features.",
+      "Fast matrix arithmetic on GPUs is what makes modern ML practical."
      ]
     },
     {
@@ -1062,6 +1255,68 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Loss per step on f(w) = (w − 3)² for three learning rates",
+     "labels": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "yLabel": "Loss",
+     "series": [
+      {
+       "name": "η = 0.01",
+       "values": [
+        9.0,
+        8.64,
+        8.3,
+        7.97,
+        7.66,
+        7.35,
+        7.06,
+        6.78,
+        6.51
+       ]
+      },
+      {
+       "name": "η = 0.1",
+       "values": [
+        9.0,
+        5.76,
+        3.69,
+        2.36,
+        1.51,
+        0.97,
+        0.62,
+        0.4,
+        0.25
+       ]
+      },
+      {
+       "name": "η = 1.05",
+       "values": [
+        9.0,
+        10.89,
+        13.18,
+        15.94,
+        19.29,
+        23.34,
+        28.25,
+        34.18,
+        41.35
+       ]
+      }
+     ],
+     "caption": "Computed exactly from w₀ = 0 (x-axis: step number). With η = 0.1 the loss falls by 36% per step, with η = 0.01 it crawls, and with η = 1.05 every step overshoots further so the loss grows."
+    },
+    {
      "type": "cli",
      "title": "Checking a derivative numerically",
      "device": "Python notebook",
@@ -1181,6 +1436,17 @@ TRACK.modules.push({
        "term": "Sigmoid",
        "def": "The S-shaped function 1 ÷ (1 + e⁻ᶻ) that maps any real number into the interval (0, 1)."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "The gradient is the vector of partial derivatives; it points uphill, so training steps against it.",
+      "Gradient descent updates w ← w − η × gradient; progress slows as the slope flattens near the minimum.",
+      "The learning rate decides everything: too small crawls, too large oscillates or diverges.",
+      "Backpropagation is the chain rule applied layer by layer, and libraries compute it automatically.",
+      "A numerical gradient check confirms a hand-written gradient."
      ]
     },
     {
@@ -1314,10 +1580,77 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "tree",
+     "title": "The same screening example in natural frequencies",
+     "root": {
+      "label": "10,000 patients",
+      "children": [
+       {
+        "label": "Condition: 100 (1%)",
+        "children": [
+         {
+          "label": "Test positive: 90",
+          "text": "True positives"
+         },
+         {
+          "label": "Test negative: 10",
+          "text": "False negatives"
+         }
+        ]
+       },
+       {
+        "label": "Healthy: 9,900 (99%)",
+        "children": [
+         {
+          "label": "Test positive: 495",
+          "text": "False positives"
+         },
+         {
+          "label": "Test negative: 9,405",
+          "text": "True negatives"
+         }
+        ]
+       }
+      ]
+     },
+     "caption": "Of 585 positive results, only 90 are real cases: 90 ÷ 585 ≈ 15%. Counting people instead of multiplying probabilities makes the base-rate effect easy to see."
+    },
+    {
      "type": "callout",
      "kind": "warning",
      "text": "The same arithmetic applies to fraud alerts, intrusion detection and defect detection. When positives are rare, even an accurate detector produces mostly false alarms. Always check the base rate before judging a model's precision.",
      "title": "The base-rate trap"
+    },
+    {
+     "type": "chart",
+     "kind": "line",
+     "title": "Share of positive results that are real, as prevalence changes",
+     "labels": [
+      "0.1%",
+      "0.5%",
+      "1%",
+      "2%",
+      "5%",
+      "10%",
+      "20%"
+     ],
+     "unit": "%",
+     "yLabel": "P(condition | positive)",
+     "series": [
+      {
+       "name": "Precision",
+       "values": [
+        1.8,
+        8.3,
+        15.4,
+        26.9,
+        48.6,
+        66.7,
+        81.8
+       ]
+      }
+     ],
+     "caption": "Computed with Bayes' rule for a test with 90% sensitivity and a 5% false positive rate (x-axis: prevalence). The test never changes; only the base rate does, and precision moves from under 2% to over 80%."
     },
     {
      "type": "formula",
@@ -1499,6 +1832,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Bayes' rule turns P(evidence | cause) into P(cause | evidence); the base rate matters as much as the test.",
+      "When positives are rare, even a good detector produces mostly false alarms.",
+      "Describe skewed data with the median and percentiles, not just the mean.",
+      "Models learn associations; acting on a feature as a cause needs experiments or causal methods."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -1664,6 +2007,38 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "cycle",
+     "title": "The labelling quality loop",
+     "center": "Trusted labels",
+     "items": [
+      {
+       "label": "Write guidelines",
+       "text": "Definitions, examples, counter-examples, edge-case rules"
+      },
+      {
+       "label": "Pilot batch",
+       "text": "Several labellers label the same small sample"
+      },
+      {
+       "label": "Measure agreement",
+       "text": "Cohen's kappa or a similar chance-corrected measure"
+      },
+      {
+       "label": "Label at scale",
+       "text": "Record guideline version, labeller and date"
+      },
+      {
+       "label": "Audit samples",
+       "text": "Re-label a random share and review disagreements"
+      },
+      {
+       "label": "Refine guidelines",
+       "text": "Fix ambiguous rules, then continue"
+      }
+     ],
+     "caption": "Labelling is a loop, not a one-off task. Each audit feeds back into the guidelines, and every guideline change is versioned so labels stay traceable."
+    },
+    {
      "type": "formula",
      "title": "Measuring label agreement",
      "items": [
@@ -1749,6 +2124,12 @@ TRACK.modules.push({
      "title": "Representativeness beats volume"
     },
     {
+     "type": "callout",
+     "kind": "warning",
+     "title": "Synthetic and model-generated data",
+     "text": "Synthetic records from simulators or generative models, and labels produced by large language models, can fill gaps, protect privacy or bootstrap a project. They also copy the biases and blind spots of whatever produced them, and a generator that memorised real records can leak them. Tag synthetic rows clearly, check a sample against careful human labels, never judge a model only on synthetic data, and keep the final test set real data from the population the model will serve."
+    },
+    {
      "type": "scenario",
      "situation": "Two nurses label 400 triage notes as 'urgent' or 'routine'. They agree on 88% of notes, but kappa is only 0.35 because nearly all notes are routine. The project lead wants to start labelling 50,000 notes. What should happen next?",
      "options": [
@@ -1823,6 +2204,17 @@ TRACK.modules.push({
        "term": "Label noise",
        "def": "Errors or inconsistencies in the target labels of a training set."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Ask where the data came from, how labels were made and whether it represents the cases the model will face.",
+      "Measure label agreement with a chance-corrected statistic such as kappa before labelling at scale.",
+      "Coverage of the deployment population matters more than raw volume.",
+      "Synthetic or model-generated data needs tagging, human spot checks and a real test set.",
+      "Keep provenance for every label: guideline version, labeller and date."
      ]
     },
     {
@@ -1932,6 +2324,52 @@ TRACK.modules.push({
        "Missingness carries signal; add an indicator and model it"
       ]
      ]
+    },
+    {
+     "type": "tree",
+     "title": "Choosing a missing-value strategy",
+     "root": {
+      "label": "Why is the value missing?",
+      "children": [
+       {
+        "label": "Completely at random",
+        "text": "Unrelated to anything",
+        "children": [
+         {
+          "label": "Drop a few rows or impute simply"
+         }
+        ]
+       },
+       {
+        "label": "At random (MAR)",
+        "text": "Explained by other columns",
+        "children": [
+         {
+          "label": "Impute from related columns"
+         }
+        ]
+       },
+       {
+        "label": "Not at random (MNAR)",
+        "text": "Depends on the hidden value",
+        "children": [
+         {
+          "label": "Impute and add a missing flag; fix collection"
+         }
+        ]
+       },
+       {
+        "label": "Cannot exist",
+        "text": "No loan, so no loan amount",
+        "children": [
+         {
+          "label": "Meaningful constant plus a flag"
+         }
+        ]
+       }
+      ]
+     },
+     "caption": "The reason for missingness, not the share missing, decides the fix. Whatever you choose, fit the imputer on training data only."
     },
     {
      "type": "compare",
@@ -2146,6 +2584,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Clean to make data truthful, not tidy: missing values and outliers can carry signal.",
+      "Diagnose why values are missing (MCAR, MAR, MNAR or structural) before choosing a fix.",
+      "Investigate outliers before acting; the extreme case may be the fraud you want to catch.",
+      "Fit imputers and other cleaning statistics on the training split only, and log every rule."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -2270,6 +2718,41 @@ TRACK.modules.push({
        "Needs a neural model and enough data"
       ]
      ]
+    },
+    {
+     "type": "tree",
+     "title": "Choosing an encoding",
+     "root": {
+      "label": "Categorical feature",
+      "children": [
+       {
+        "label": "Truly ordered levels",
+        "text": "Ordinal encoding"
+       },
+       {
+        "label": "Few levels",
+        "text": "One-hot encoding"
+       },
+       {
+        "label": "Many levels",
+        "children": [
+         {
+          "label": "Linear or distance models",
+          "text": "Out-of-fold smoothed target or frequency encoding"
+         },
+         {
+          "label": "Tree ensembles",
+          "text": "Native categorical support or ordinal codes"
+         },
+         {
+          "label": "Neural networks",
+          "text": "Learned embeddings"
+         }
+        ]
+       }
+      ]
+     },
+     "caption": "Order and cardinality drive the choice, and the model family refines it. In every branch, decide in advance how unseen categories are handled in production."
     },
     {
      "type": "formula",
@@ -2422,6 +2905,16 @@ TRACK.modules.push({
        "term": "Log transform",
        "def": "Applying a logarithm to compress large values and reduce right skew."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "One-hot suits nominal features with few levels; ordinal encoding only suits truly ordered levels.",
+      "High-cardinality features need out-of-fold target encoding with smoothing, frequency encoding or embeddings.",
+      "Scale features for distance-, gradient- and penalty-based models; trees barely care.",
+      "Fit encoders and scalers on training data and ship them with the model."
      ]
     },
     {
@@ -2589,6 +3082,33 @@ TRACK.modules.push({
      "title": "Point-in-time correctness"
     },
     {
+     "type": "timeline",
+     "title": "Point-in-time windows for a scoring date of 1 March 2026",
+     "items": [
+      {
+       "when": "30 Jan – 28 Feb",
+       "label": "Feature window",
+       "text": "Only events in these 30 days feed the aggregates."
+      },
+      {
+       "when": "1 Mar",
+       "label": "Cut-off and scoring",
+       "text": "Features are frozen and the customer is scored."
+      },
+      {
+       "when": "5 Mar",
+       "label": "Late-arriving record",
+       "text": "A 27 Feb event loaded on 5 Mar was not available at scoring; use load time if production would have missed it."
+      },
+      {
+       "when": "31 Mar",
+       "label": "Label known",
+       "text": "The outcome window (1–30 Mar) closes and the target can be recorded."
+      }
+     ],
+     "caption": "Features look backwards from the cut-off and labels look forwards from it. Rebuilding features from a table that already contains later or late-loaded events quietly breaks this separation."
+    },
+    {
      "type": "cli",
      "title": "Point-in-time aggregates in pandas",
      "device": "Python notebook",
@@ -2709,6 +3229,16 @@ TRACK.modules.push({
        "term": "Aggregation window",
        "def": "The time span, such as the last 30 days, over which a feature is summarised."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Good features expose the pattern: ratios, recency–frequency–monetary summaries, cyclical time and domain signals.",
+      "Every aggregate must use only data available before the prediction time, including late-arriving data.",
+      "Domain experts are the best source of feature ideas.",
+      "Keep a feature group only if cross-validated performance improves with it."
      ]
     },
     {
@@ -2836,6 +3366,52 @@ TRACK.modules.push({
       "# output: 0.872"
      ],
      "note": "The scaler is refitted inside each fold on that fold's training part only, so no validation information leaks. class_weight='balanced' up-weights the rare positive class (about 10% of rows)."
+    },
+    {
+     "type": "sequence",
+     "title": "What happens inside one cross-validation fold",
+     "actors": [
+      "CV loop",
+      "Pipeline",
+      "Training rows",
+      "Validation rows"
+     ],
+     "steps": [
+      {
+       "from": 0,
+       "to": 1,
+       "label": "fit(training rows of this fold)"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Learn medians, encodings, scaling",
+       "note": "statistics from training rows only"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Resample if needed, fit the model"
+      },
+      {
+       "from": 0,
+       "to": 1,
+       "label": "predict(validation rows)"
+      },
+      {
+       "from": 1,
+       "to": 3,
+       "label": "Apply fitted steps unchanged",
+       "note": "no refitting, real class balance"
+      },
+      {
+       "from": 3,
+       "to": 0,
+       "label": "Fold score",
+       "reply": true
+      }
+     ],
+     "caption": "The pipeline refits every step on each fold's training rows and only applies them to the validation rows. That is what keeps imputation, encoding, resampling and selection from leaking."
     },
     {
      "type": "formula",
@@ -3012,6 +3588,17 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Put every preparation step and the model in one pipeline so fit learns only from training data.",
+      "Handle imbalance with class weights first; resample only inside training folds.",
+      "Evaluate on data with the real class balance and with metrics other than accuracy.",
+      "Select features inside cross-validation, never on the full dataset.",
+      "Save and version the whole fitted pipeline, not just the model."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -3156,6 +3743,36 @@ TRACK.modules.push({
        "text": "SS_tot = 2.778 + 0.111 + 1.778 ≈ 4.667, so R² = 1 − 0.167 ÷ 4.667 ≈ 0.964."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "kind": "line",
+     "title": "The three points and the least-squares line ŷ = 1.5x + 0.667",
+     "labels": [
+      "x = 1",
+      "x = 2",
+      "x = 3"
+     ],
+     "yLabel": "y",
+     "series": [
+      {
+       "name": "Actual y",
+       "values": [
+        2,
+        4,
+        5
+       ]
+      },
+      {
+       "name": "Fitted ŷ",
+       "values": [
+        2.17,
+        3.67,
+        5.17
+       ]
+      }
+     ],
+     "caption": "Residuals are −0.17, +0.33 and −0.17: they sum to zero, as least squares with an intercept guarantees. The line passes through the point of means (2, 3.667)."
     },
     {
      "type": "cli",
@@ -3311,6 +3928,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Linear regression predicts w · x + b and is fitted by minimising squared error.",
+      "Each weight is an association holding other features fixed, not a causal effect.",
+      "R² compares the model with predicting the mean; check residual plots for the assumptions.",
+      "Correlated features make individual coefficients unstable even when predictions are fine."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -3413,6 +4040,34 @@ TRACK.modules.push({
        "meaning": "Errors −2, −4, −5. ∂w = (2/3)(−25) ≈ −16.67, ∂b = (2/3)(−11) ≈ −7.33. New w ≈ 1.667, b ≈ 0.733."
       }
      ]
+    },
+    {
+     "type": "cycle",
+     "title": "The mini-batch training loop",
+     "center": "One epoch = one pass over the data",
+     "items": [
+      {
+       "label": "Shuffle and batch",
+       "text": "Draw the next mini-batch of, say, 32–256 rows"
+      },
+      {
+       "label": "Forward pass",
+       "text": "Compute predictions for the batch"
+      },
+      {
+       "label": "Compute loss",
+       "text": "Average error on the batch"
+      },
+      {
+       "label": "Compute gradients",
+       "text": "Analytically or by backpropagation"
+      },
+      {
+       "label": "Update parameters",
+       "text": "Optimiser step with the current learning rate"
+      }
+     ],
+     "caption": "Each turn of the loop is one step; after every epoch, log training and validation loss to see whether to continue, adjust the learning rate or stop."
     },
     {
      "type": "cli",
@@ -3542,6 +4197,57 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "The overfitting signature in loss curves (illustrative)",
+     "labels": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+     ],
+     "yLabel": "Loss",
+     "series": [
+      {
+       "name": "Training loss",
+       "values": [
+        0.9,
+        0.62,
+        0.48,
+        0.4,
+        0.34,
+        0.29,
+        0.25,
+        0.21,
+        0.18,
+        0.15
+       ]
+      },
+      {
+       "name": "Validation loss",
+       "values": [
+        0.92,
+        0.66,
+        0.54,
+        0.49,
+        0.47,
+        0.47,
+        0.49,
+        0.52,
+        0.56,
+        0.6
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: epoch). Training loss keeps falling, but validation loss bottoms out around epochs 5–6 and then rises: keep that checkpoint and add regularisation rather than training longer."
+    },
+    {
      "type": "scenario",
      "situation": "A team trains logistic regression with gradient descent on features including 'annual turnover in taka' (up to 10⁹) and 'number of employees' (up to 500). Training needs thousands of epochs and still oscillates. What should they try first?",
      "options": [
@@ -3611,6 +4317,17 @@ TRACK.modules.push({
        "term": "Learning-rate schedule",
        "def": "A planned change of the learning rate during training, such as warm-up then decay."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Gradient descent repeats: predict, measure loss, compute gradients, step downhill.",
+      "Mini-batches are the default: cheap, slightly noisy steps that suit modern hardware.",
+      "AdamW with a tuned learning rate, warm-up and decay is the usual starting point for deep networks.",
+      "Read curves together: a widening gap between training and validation loss means overfitting.",
+      "Scale inputs and check that the model can overfit a tiny batch before long runs."
      ]
     },
     {
@@ -3718,6 +4435,36 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "The sigmoid turns any score into a probability",
+     "labels": [
+      "z = −6",
+      "z = −4",
+      "z = −2",
+      "z = 0",
+      "z = 2",
+      "z = 4",
+      "z = 6"
+     ],
+     "yLabel": "p = σ(z)",
+     "series": [
+      {
+       "name": "σ(z)",
+       "values": [
+        0.002,
+        0.018,
+        0.119,
+        0.5,
+        0.881,
+        0.982,
+        0.998
+       ]
+      }
+     ],
+     "caption": "Computed values. The curve is steepest at z = 0, where p = 0.5, and flattens towards 0 and 1, so large positive or negative scores change the probability very little."
+    },
+    {
      "type": "formula",
      "title": "Log loss (binary cross-entropy)",
      "items": [
@@ -3747,6 +4494,34 @@ TRACK.modules.push({
        "meaning": "The same neat 'error times input' form as linear regression."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "kind": "bar",
+     "title": "Log loss for a true positive (y = 1) at different predicted probabilities",
+     "labels": [
+      "p = 0.9",
+      "p = 0.7",
+      "p = 0.5",
+      "p = 0.3",
+      "p = 0.1",
+      "p = 0.01"
+     ],
+     "yLabel": "Log loss",
+     "series": [
+      {
+       "name": "−ln p",
+       "values": [
+        0.105,
+        0.357,
+        0.693,
+        1.204,
+        2.303,
+        4.605
+       ]
+      }
+     ],
+     "caption": "Computed values. Being confidently wrong is punished hardest: predicting 0.01 for a real positive costs 44 times more than predicting 0.9."
     },
     {
      "type": "formula",
@@ -3871,6 +4646,16 @@ TRACK.modules.push({
        "term": "Calibration",
        "def": "How well predicted probabilities match observed frequencies, for example 30% predicted means about 30% happen."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Logistic regression maps a linear score through the sigmoid to a probability; softmax does the same for several classes.",
+      "A coefficient multiplies the odds by e^w for each one-unit increase in its feature.",
+      "Log loss rewards honest probabilities and heavily punishes confident mistakes.",
+      "Choose the decision threshold from costs and capacity, not by default at 0.5."
      ]
     },
     {
@@ -4052,6 +4837,45 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Training and cross-validated error as λ grows (illustrative)",
+     "labels": [
+      "λ = 0.001",
+      "λ = 0.01",
+      "λ = 0.1",
+      "λ = 1",
+      "λ = 10",
+      "λ = 100"
+     ],
+     "yLabel": "Error",
+     "series": [
+      {
+       "name": "Training error",
+       "values": [
+        0.1,
+        0.11,
+        0.13,
+        0.17,
+        0.26,
+        0.4
+       ]
+      },
+      {
+       "name": "Cross-validated error",
+       "values": [
+        0.31,
+        0.27,
+        0.22,
+        0.2,
+        0.26,
+        0.4
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers on a log-scaled grid. A weak penalty overfits (large gap), a strong one underfits (both errors high); pick λ near the cross-validated minimum, or the simplest model within one standard error of it."
+    },
+    {
      "type": "callout",
      "kind": "insight",
      "text": "A penalty encodes a belief that small weights are more likely than large ones. Ridge corresponds to assuming weights follow a normal distribution centred on zero; lasso to a sharper, Laplace-shaped belief that many weights are exactly or nearly zero. More data lets the evidence override the prior, which is why regularisation matters most for small datasets.",
@@ -4151,6 +4975,16 @@ TRACK.modules.push({
        "term": "Weight decay",
        "def": "Shrinking weights a little at every update; equivalent to L2 regularisation for plain gradient descent."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Regularisation adds a penalty on weight size to trade a little training fit for better generalisation.",
+      "L1 (lasso) zeroes weights and selects features; L2 (ridge) shrinks all weights and handles correlation well.",
+      "Elastic net combines both and is more stable with groups of correlated features.",
+      "Scale features first and tune the strength by cross-validation on a log grid."
      ]
     },
     {
@@ -4371,6 +5205,36 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "tree",
+     "title": "A quick guide to classic learners",
+     "root": {
+      "label": "What matters most?",
+      "children": [
+       {
+        "label": "Explainable probabilities",
+        "text": "Logistic regression"
+       },
+       {
+        "label": "Short text, little data, fast",
+        "text": "Naive Bayes"
+       },
+       {
+        "label": "Few scaled features, similarity",
+        "text": "k-nearest neighbours"
+       },
+       {
+        "label": "Clear margin, medium data",
+        "text": "Support vector machine"
+       },
+       {
+        "label": "Mixed tabular, top accuracy",
+        "text": "Tree ensembles (Module 5)"
+       }
+      ]
+     },
+     "caption": "A starting point, not a rule: whichever family you pick, compare it with a baseline on the same folds before committing."
+    },
+    {
      "type": "callout",
      "kind": "insight",
      "text": "In high dimensions, almost all points are far from each other and distances become similar, so 'nearest' neighbours are not very near. Distance-based methods such as k-NN weaken as the number of features grows unless the data truly lies on a lower-dimensional structure. Feature selection or dimensionality reduction helps.",
@@ -4470,6 +5334,16 @@ TRACK.modules.push({
        "term": "Curse of dimensionality",
        "def": "The set of problems, such as distances losing meaning, that arise as the number of features grows."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "k-NN predicts from similar past cases; it needs scaled features and struggles in high dimensions.",
+      "Naive Bayes is a fast, strong baseline for text despite its independence assumption.",
+      "SVMs maximise the margin; kernels let them draw non-linear boundaries on medium-sized data.",
+      "Compare candidate families on identical folds and record cost and explainability, not only accuracy."
      ]
     },
     {
@@ -4627,6 +5501,36 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "tree",
+     "title": "Choosing a validation scheme",
+     "root": {
+      "label": "How will the model be used?",
+      "children": [
+       {
+        "label": "Independent rows",
+        "text": "Stratified k-fold"
+       },
+       {
+        "label": "New customers or patients",
+        "text": "Group k-fold by entity"
+       },
+       {
+        "label": "Future periods",
+        "text": "Time-ordered split or rolling origin"
+       },
+       {
+        "label": "Tuning on small data",
+        "text": "Nested cross-validation"
+       },
+       {
+        "label": "Very large data",
+        "text": "One hold-out, still time- or group-aware"
+       }
+      ]
+     },
+     "caption": "The split must mimic how predictions will be made. When several apply, combine them, for example group-aware folds inside a time-ordered split."
+    },
+    {
      "type": "formula",
      "title": "Summarising cross-validation",
      "items": [
@@ -4673,6 +5577,33 @@ TRACK.modules.push({
      "kind": "warning",
      "text": "If the model will score **new customers**, validate on customers it has never seen (group split). If it will predict **next month**, validate on a later period (time split). A random split in these cases measures a skill the model will never be asked to use, and the score will be too high.",
      "title": "Match the split to deployment"
+    },
+    {
+     "type": "timeline",
+     "title": "A time-based evaluation plan",
+     "items": [
+      {
+       "when": "Jan 2024 – Jun 2025",
+       "label": "Training",
+       "text": "Fit candidate models and pipelines."
+      },
+      {
+       "when": "Jul – Dec 2025",
+       "label": "Validation",
+       "text": "Choose features, hyperparameters and the threshold."
+      },
+      {
+       "when": "Jan – Mar 2026",
+       "label": "Test",
+       "text": "Score the final choice once."
+      },
+      {
+       "when": "Apr 2026 onward",
+       "label": "Deployment",
+       "text": "Monitor live performance against the test result."
+      }
+     ],
+     "caption": "Each period is later than the one before, so evaluation imitates predicting the future. Touch the test window only once, after every choice has been made."
     },
     {
      "type": "keypoints",
@@ -4770,6 +5701,16 @@ TRACK.modules.push({
        "term": "Nested cross-validation",
        "def": "An outer cross-validation loop for scoring wrapped around an inner loop for tuning."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Training fits, validation chooses, and the test set reports once.",
+      "Match the split to deployment: group splits for new entities, time splits for future periods.",
+      "Report the cross-validation mean and spread, not only the best fold.",
+      "Keep every preprocessing step inside the cross-validated pipeline; use nested CV to report a tuned procedure on small data."
      ]
     },
     {
@@ -4885,6 +5826,33 @@ TRACK.modules.push({
        "meaning": "With τ = 0.9, under-predicting by 10 costs 9 while over-predicting by 10 costs 1."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "kind": "bar",
+     "title": "Same MAE, different RMSE",
+     "labels": [
+      "MAE",
+      "RMSE"
+     ],
+     "yLabel": "Error (units)",
+     "series": [
+      {
+       "name": "Model A: errors 2, 2, 2, 2",
+       "values": [
+        2,
+        2
+       ]
+      },
+      {
+       "name": "Model B: errors 0, 0, 0, 8",
+       "values": [
+        2,
+        4
+       ]
+      }
+     ],
+     "caption": "Computed values. Both models miss by 8 units in total, but RMSE doubles for model B because squaring punishes its single large miss. Choose the metric whose penalty matches the real cost of errors."
     },
     {
      "type": "cli",
@@ -5047,6 +6015,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "MAE measures typical error and is minimised by the median; RMSE punishes large misses and is minimised by the mean.",
+      "MAPE breaks down near zero actuals; prefer scaled or weighted alternatives for intermittent demand.",
+      "Quantile loss builds asymmetric costs into a forecast.",
+      "Always report a naive baseline and errors by segment."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -5125,25 +6103,39 @@ TRACK.modules.push({
      "text": "A classifier's errors come in two kinds that rarely cost the same. Missing a fraudulent transfer and blocking a genuine one are different failures with different owners. Good evaluation keeps the two kinds apart and then chooses a **threshold** that balances them for the business."
     },
     {
-     "type": "table",
-     "title": "The confusion matrix (positive = fraud)",
-     "head": [
-      "Actual class",
-      "Predicted fraud",
-      "Predicted legitimate"
+     "type": "matrix",
+     "title": "The confusion matrix (positive = fraud, 1,000 transfers)",
+     "x": "Predicted fraud (no → yes)",
+     "y": "Actually fraud (no → yes)",
+     "quadrants": [
+      {
+       "title": "False negative (FN) = 40",
+       "items": [
+        "Fraud missed",
+        "Loss to the customer or the firm"
+       ]
+      },
+      {
+       "title": "True positive (TP) = 80",
+       "items": [
+        "Fraud caught"
+       ]
+      },
+      {
+       "title": "True negative (TN) = 860",
+       "items": [
+        "Genuine transfer passed"
+       ]
+      },
+      {
+       "title": "False positive (FP) = 20",
+       "items": [
+        "Genuine transfer blocked",
+        "Review cost and customer friction"
+       ]
+      }
      ],
-     "rows": [
-      [
-       "Actually fraud",
-       "True positive (TP) = 80",
-       "False negative (FN) = 40"
-      ],
-      [
-       "Actually legitimate",
-       "False positive (FP) = 20",
-       "True negative (TN) = 860"
-      ]
-     ]
+     "caption": "Recall uses the top row (80 ÷ 120) and precision uses the right column (80 ÷ 100). The large bottom-left cell is why accuracy looks flattering on rare-event problems."
     },
     {
      "type": "formula",
@@ -5251,6 +6243,54 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Precision and recall as the threshold moves (illustrative)",
+     "labels": [
+      "0.1",
+      "0.2",
+      "0.3",
+      "0.4",
+      "0.5",
+      "0.6",
+      "0.7",
+      "0.8",
+      "0.9"
+     ],
+     "yLabel": "Score",
+     "series": [
+      {
+       "name": "Precision",
+       "values": [
+        0.15,
+        0.28,
+        0.42,
+        0.55,
+        0.66,
+        0.75,
+        0.82,
+        0.88,
+        0.93
+       ]
+      },
+      {
+       "name": "Recall",
+       "values": [
+        0.98,
+        0.95,
+        0.9,
+        0.83,
+        0.74,
+        0.63,
+        0.5,
+        0.36,
+        0.2
+       ]
+      }
+     ],
+     "caption": "Illustrative curves (x-axis: decision threshold). Raising the threshold trades recall for precision; the right point comes from costs and review capacity, not from where the lines cross."
+    },
+    {
      "type": "callout",
      "kind": "insight",
      "text": "If a model says 0.2 for a group of patients, about 20% of them should have the outcome. Boosted trees, SVMs and over-trained networks are often mis-calibrated. Check with a reliability plot (predicted versus observed rate per bin) and fix with Platt scaling or isotonic regression fitted on validation data.",
@@ -5344,6 +6384,16 @@ TRACK.modules.push({
        "term": "Reliability diagram",
        "def": "A plot of predicted probability against observed frequency used to check calibration."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Keep the two error types apart: precision asks how many flags are right, recall asks how many positives are caught.",
+      "ROC-AUC measures ranking; with rare positives, PR curves and precision at the operating point are more informative.",
+      "Choose the threshold from error costs and capacity, and record why.",
+      "Check calibration with a reliability plot when probabilities drive pricing, triage or expected-cost decisions."
      ]
     },
     {
@@ -5451,6 +6501,64 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "The bias–variance trade-off (illustrative)",
+     "labels": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "yLabel": "Expected error",
+     "series": [
+      {
+       "name": "Bias²",
+       "values": [
+        0.5,
+        0.32,
+        0.2,
+        0.12,
+        0.07,
+        0.04,
+        0.025,
+        0.015
+       ]
+      },
+      {
+       "name": "Variance",
+       "values": [
+        0.01,
+        0.02,
+        0.04,
+        0.07,
+        0.12,
+        0.2,
+        0.32,
+        0.5
+       ]
+      },
+      {
+       "name": "Total (with noise 0.1)",
+       "values": [
+        0.61,
+        0.44,
+        0.34,
+        0.29,
+        0.29,
+        0.34,
+        0.445,
+        0.615
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: model complexity, low to high). Bias falls and variance rises as complexity grows; total error is lowest in between and never drops below the irreducible noise."
+    },
+    {
      "type": "table",
      "title": "Diagnosing from training and validation scores",
      "head": [
@@ -5525,6 +6633,42 @@ TRACK.modules.push({
       "# output: 20 1.0 0.83"
      ],
      "note": "A depth-1 tree underfits: both scores are low. From depth 3 the validation score stops improving while the training score climbs to a perfect 1.0, a widening gap that signals memorisation. Prefer the simplest depth near the validation peak, here about 3."
+    },
+    {
+     "type": "chart",
+     "kind": "line",
+     "title": "Validation curve for tree depth (from the code above)",
+     "labels": [
+      "depth 1",
+      "depth 3",
+      "depth 5",
+      "depth 10",
+      "depth 20"
+     ],
+     "yLabel": "Accuracy",
+     "series": [
+      {
+       "name": "Training",
+       "values": [
+        0.79,
+        0.88,
+        0.93,
+        0.99,
+        1.0
+       ]
+      },
+      {
+       "name": "Validation",
+       "values": [
+        0.78,
+        0.84,
+        0.84,
+        0.84,
+        0.83
+       ]
+      }
+     ],
+     "caption": "Validation accuracy stops improving at depth 3 while training accuracy climbs to 1.0. The growing gap is variance; the simplest depth near the validation peak is the better choice."
     },
     {
      "type": "table",
@@ -5630,6 +6774,16 @@ TRACK.modules.push({
        "term": "Random search",
        "def": "Hyperparameter tuning by sampling settings at random from defined ranges."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Error = bias² + variance + irreducible noise; diagnose which dominates before acting.",
+      "High bias: both scores poor. High variance: a large training–validation gap.",
+      "Learning curves tell you whether more data is likely to help.",
+      "Random search, Bayesian optimisation or successive halving beat large grids for the same budget; log every trial."
      ]
     },
     {
@@ -5747,6 +6901,36 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "timeline",
+     "title": "Why 'reminder SMS sent' leaks: one loan's timeline",
+     "items": [
+      {
+       "when": "Day 0",
+       "label": "Application scored",
+       "text": "Prediction time: only data known now may be used."
+      },
+      {
+       "when": "Day 30",
+       "label": "First instalment due"
+      },
+      {
+       "when": "Day 31",
+       "label": "Payment missed"
+      },
+      {
+       "when": "Day 32",
+       "label": "Reminder SMS sent",
+       "text": "Created by the outcome process; it cannot exist at Day 0."
+      },
+      {
+       "when": "Day 120",
+       "label": "Default recorded",
+       "text": "The label."
+      }
+     ],
+     "caption": "Any feature created between the prediction time and the label is leakage, however predictive it looks. A timestamp audit places every feature on this line."
+    },
+    {
      "type": "cli",
      "title": "Leakage you can measure: feature selection on pure noise",
      "device": "Python notebook",
@@ -5777,6 +6961,12 @@ TRACK.modules.push({
       "**Shadow test**: score live data for a few weeks before go-live and compare with offline estimates."
      ],
      "title": "Practical leakage checks"
+    },
+    {
+     "type": "callout",
+     "kind": "warning",
+     "title": "Benchmark contamination in pre-trained models",
+     "text": "Leakage also affects large pre-trained models: public benchmark questions may have appeared in their training data, so headline scores overstate ability on your task. Evaluate on a private, recent set built from your own cases, keep it out of fine-tuning data and prompt examples, and refresh it over time."
     },
     {
      "type": "case",
@@ -5915,6 +7105,17 @@ TRACK.modules.push({
        "term": "Paired comparison",
        "def": "Comparing two models on exactly the same folds or examples so shared difficulty cancels out."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Leakage is information unavailable at prediction time reaching training or evaluation; it inflates offline scores.",
+      "Audit every feature's timestamp, split by time and entity, and keep preprocessing inside the pipeline.",
+      "Treat results that look too good to be true as a bug report.",
+      "Version data, code, environment and seeds, and compare models on identical folds with paired differences.",
+      "For pre-trained models, use private, recent evaluation sets to avoid benchmark contamination."
      ]
     },
     {

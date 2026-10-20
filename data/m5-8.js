@@ -111,6 +111,33 @@ TRACK.modules.push({
      "note": "Two questions about petal width separate the three species almost perfectly. A domain expert can read and challenge every rule."
     },
     {
+     "type": "tree",
+     "title": "The fitted iris tree, drawn",
+     "root": {
+      "label": "Petal width ≤ 0.80 cm?",
+      "children": [
+       {
+        "label": "Yes",
+        "text": "Leaf: setosa (class 0)"
+       },
+       {
+        "label": "No: petal width ≤ 1.75 cm?",
+        "children": [
+         {
+          "label": "Yes",
+          "text": "Leaf: versicolor (class 1)"
+         },
+         {
+          "label": "No",
+          "text": "Leaf: virginica (class 2)"
+         }
+        ]
+       }
+      ]
+     },
+     "caption": "Each internal node is one learned question and each leaf a prediction. Reading the tree from the root shows exactly why a flower received its class."
+    },
+    {
      "type": "compare",
      "title": "Strengths and weaknesses of a single tree",
      "columns": [
@@ -241,6 +268,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "A tree asks a sequence of yes/no questions chosen greedily to reduce impurity (Gini or entropy).",
+      "Trees handle non-linearity, interactions and mixed feature types without scaling.",
+      "Single trees have high variance; limit depth and leaf size or prune.",
+      "Regression trees cannot predict outside the range of their training targets."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -343,6 +380,51 @@ TRACK.modules.push({
        "meaning": "Each bootstrap sample contains about 63% of distinct rows; the other 37% are 'out of bag' for that tree."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "kind": "line",
+     "title": "Variance of a forest's average as trees are added (σ² = 1)",
+     "labels": [
+      "1",
+      "2",
+      "5",
+      "10",
+      "25",
+      "50",
+      "100",
+      "500"
+     ],
+     "yLabel": "Variance of the average",
+     "series": [
+      {
+       "name": "Correlation ρ = 0.7",
+       "values": [
+        1.0,
+        0.85,
+        0.76,
+        0.73,
+        0.712,
+        0.706,
+        0.703,
+        0.701
+       ]
+      },
+      {
+       "name": "Correlation ρ = 0.3",
+       "values": [
+        1.0,
+        0.65,
+        0.44,
+        0.37,
+        0.328,
+        0.314,
+        0.307,
+        0.301
+       ]
+      }
+     ],
+     "caption": "Computed from Var = ρσ² + (1 − ρ)σ² ÷ B (x-axis: number of trees). Adding trees quickly reaches a floor equal to ρ; only decorrelating the trees, for example with a smaller max_features, lowers that floor."
     },
     {
      "type": "steps",
@@ -515,6 +597,16 @@ TRACK.modules.push({
        "term": "Decorrelation",
        "def": "Making ensemble members' errors less similar so that averaging cancels more of them."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Bagging averages trees trained on bootstrap samples, cutting variance.",
+      "Random feature subsets at each split decorrelate trees, which lowers the error floor.",
+      "More trees stabilise predictions but cannot remove error shared by correlated trees.",
+      "The out-of-bag score gives a built-in validation estimate."
      ]
     },
     {
@@ -706,6 +798,51 @@ TRACK.modules.push({
      "note": "Although up to 1,000 rounds were allowed, training stopped after 104 because the internal validation score stopped improving. Early stopping chooses the number of trees for you."
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Training and validation loss over boosting rounds (illustrative)",
+     "labels": [
+      "50",
+      "100",
+      "150",
+      "200",
+      "250",
+      "300",
+      "350",
+      "400"
+     ],
+     "yLabel": "Log loss",
+     "series": [
+      {
+       "name": "Training",
+       "values": [
+        0.45,
+        0.33,
+        0.27,
+        0.23,
+        0.2,
+        0.17,
+        0.15,
+        0.13
+       ]
+      },
+      {
+       "name": "Validation",
+       "values": [
+        0.47,
+        0.37,
+        0.34,
+        0.335,
+        0.336,
+        0.34,
+        0.345,
+        0.35
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: boosting round). Training loss keeps falling, but validation loss flattens and then creeps up; early stopping keeps the model from about round 200."
+    },
+    {
      "type": "compare",
      "title": "Random forest versus gradient boosting",
      "columns": [
@@ -728,6 +865,12 @@ TRACK.modules.push({
        ]
       }
      ]
+    },
+    {
+     "type": "callout",
+     "kind": "insight",
+     "title": "Still the tabular default",
+     "text": "For small and medium tabular data, gradient-boosted trees remain the strong default baseline. Current libraries handle missing values and categorical features natively and can train on GPUs. Newer options, including pre-trained tabular models that predict from training examples supplied in context, can be competitive on small datasets: treat them as extra candidates compared on the same folds, not as automatic replacements."
     },
     {
      "type": "callout",
@@ -808,6 +951,16 @@ TRACK.modules.push({
        "term": "Subsampling",
        "def": "Training each tree on a random fraction of rows or features to add diversity and reduce overfitting."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Boosting adds shallow trees in sequence, each fitting what the ensemble still gets wrong.",
+      "The learning rate and the number of rounds trade off; set rounds high and use early stopping.",
+      "Tune tree complexity and sampling before fine-tuning the learning rate.",
+      "Gradient-boosted trees remain the strong default for tabular data; compare any newcomer fairly."
      ]
     },
     {
@@ -944,6 +1097,34 @@ TRACK.modules.push({
        "meaning": "Prediction = 0.10 + 0.12 − 0.04 − 0.03 = 0.15. Late payments are the main reason this applicant scores high."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "kind": "bar",
+     "title": "Why one applicant scored 0.17 (illustrative Shapley contributions)",
+     "labels": [
+      "Base value",
+      "Late payments",
+      "Utilisation",
+      "Tenure",
+      "Income",
+      "Prediction"
+     ],
+     "yLabel": "Default probability",
+     "series": [
+      {
+       "name": "Contribution",
+       "values": [
+        0.08,
+        0.1,
+        0.04,
+        -0.03,
+        -0.02,
+        0.17
+       ]
+      }
+     ],
+     "caption": "Illustrative values. The base value plus the signed contributions (0.08 + 0.10 + 0.04 − 0.03 − 0.02) equals the prediction, so each bar is a reason that can be reported to the applicant or a reviewer."
     },
     {
      "type": "cli",
@@ -1107,6 +1288,17 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Use permutation importance on validation data for global importance; gain importance is biased.",
+      "Shapley attributions explain single predictions additively; partial dependence and ICE plots show shape.",
+      "Explanations describe how the model uses features, not what causes the outcome.",
+      "Monotonic constraints encode agreed domain logic and prevent odd reversals.",
+      "Choose a model family by accuracy, explainability, cost and risk together."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -1232,6 +1424,30 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "cycle",
+     "title": "The k-means loop",
+     "center": "Repeat until stable",
+     "items": [
+      {
+       "label": "Place k centres",
+       "text": "Smart random start (k-means++), several restarts"
+      },
+      {
+       "label": "Assign points",
+       "text": "Each point joins its nearest centre"
+      },
+      {
+       "label": "Move centres",
+       "text": "Each centre moves to the mean of its points"
+      },
+      {
+       "label": "Check change",
+       "text": "Stop when assignments no longer change"
+      }
+     ],
+     "caption": "Each turn can only lower inertia, so the loop always settles, but possibly in a poor local minimum. That is why libraries run several restarts and keep the best."
+    },
+    {
      "type": "cli",
      "title": "Choosing k with silhouette scores",
      "device": "Python notebook",
@@ -1250,6 +1466,32 @@ TRACK.modules.push({
       "# output: 6 769 0.561"
      ],
      "note": "Inertia always falls as k rises, so look for the 'elbow' where gains flatten (here after k = 4). The silhouette score peaks at k = 4, matching the four groups that generated the data."
+    },
+    {
+     "type": "chart",
+     "kind": "bar",
+     "title": "Silhouette score by number of clusters (from the code above)",
+     "labels": [
+      "k = 2",
+      "k = 3",
+      "k = 4",
+      "k = 5",
+      "k = 6"
+     ],
+     "yLabel": "Mean silhouette",
+     "series": [
+      {
+       "name": "Silhouette",
+       "values": [
+        0.596,
+        0.761,
+        0.791,
+        0.665,
+        0.561
+       ]
+      }
+     ],
+     "caption": "The score peaks at k = 4, the number of groups that generated the data. On real data the peak is rarely this clear, so combine it with whether the segments are useful."
     },
     {
      "type": "table",
@@ -1399,6 +1641,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Clusters are a lens, not ground truth; judge them by the decisions they improve.",
+      "k-means suits round, similar-sized clusters on scaled features; DBSCAN finds odd shapes and noise.",
+      "Inertia always falls with k; use the elbow, silhouette and business usefulness together.",
+      "Feature choice and scaling define what \"similar\" means."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -1522,6 +1774,58 @@ TRACK.modules.push({
      "note": "Images of handwritten digits have 64 pixel features, but 29 components retain 95% of the variance. The first two components alone keep only 28.5%, so a 2-D plot hides a lot of structure."
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Explained variance by component (illustrative)",
+     "labels": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+     ],
+     "unit": "%",
+     "yLabel": "Variance explained",
+     "series": [
+      {
+       "name": "Each component",
+       "values": [
+        38,
+        22,
+        14,
+        9,
+        6,
+        4,
+        3,
+        2,
+        1,
+        1
+       ]
+      },
+      {
+       "name": "Cumulative",
+       "values": [
+        38,
+        60,
+        74,
+        83,
+        89,
+        93,
+        96,
+        98,
+        99,
+        100
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: component number). The first few components carry most of the variance; here 5 components keep 89% and 6 keep 93%, so a 90–95% rule suggests keeping 6."
+    },
+    {
      "type": "compare",
      "title": "Uses of dimensionality reduction",
      "columns": [
@@ -1636,6 +1940,16 @@ TRACK.modules.push({
        "term": "t-SNE",
        "def": "A non-linear technique that maps high-dimensional data to two or three dimensions for visualisation, preserving local neighbourhoods."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "PCA finds orthogonal directions of maximum variance and keeps the few that matter.",
+      "Standardise first and fit PCA inside the pipeline on training data only.",
+      "Choose components by cumulative explained variance or by downstream validation score.",
+      "t-SNE and UMAP are for visual exploration; distances and gap sizes in them are not reliable."
      ]
     },
     {
@@ -1823,8 +2137,9 @@ TRACK.modules.push({
      "note": "Ten anomalies were drawn uniformly over a wide square; some happened to land inside the normal cloud and are genuinely indistinguishable. Precision at 20 is 0.25, recall 0.5, which is typical: detectors rank cases for human review rather than give final answers."
     },
     {
-     "type": "flow",
+     "type": "cycle",
      "title": "A detection loop that improves over time",
+     "center": "Better alerts",
      "items": [
       {
        "label": "Score",
@@ -1850,13 +2165,49 @@ TRACK.modules.push({
        "label": "Monitor",
        "text": "Track precision and new patterns"
       }
-     ]
+     ],
+     "caption": "Each pass turns analyst decisions into labels, so the system moves from purely unsupervised scoring towards a supervised model tuned to review capacity."
     },
     {
      "type": "callout",
      "kind": "pro",
      "text": "A transaction that is unusual for the whole population may be normal for that customer. Features that compare a record with the entity's own history (amount ÷ customer's 90-day median, new device, new recipient, unusual hour for this customer) often matter more than the choice of algorithm.",
      "title": "Context beats cleverness"
+    },
+    {
+     "type": "matrix",
+     "title": "Triage: where each alert should go",
+     "x": "Anomaly score (low → high)",
+     "y": "Potential impact (low → high)",
+     "quadrants": [
+      {
+       "title": "Rules and watchlists",
+       "items": [
+        "Known high-impact patterns",
+        "Low score but must not be missed"
+       ]
+      },
+      {
+       "title": "Investigate first",
+       "items": [
+        "Top of the analyst queue",
+        "Full context attached"
+       ]
+      },
+      {
+       "title": "Ignore or sample",
+       "items": [
+        "Random audit sample only"
+       ]
+      },
+      {
+       "title": "Batch review",
+       "items": [
+        "Daily review or auto-close known benign patterns"
+       ]
+      }
+     ],
+     "caption": "Ranking by score alone mixes trivial oddities with costly ones. Combining score with impact keeps scarce analyst time on the top-right cell."
     },
     {
      "type": "scenario",
@@ -1920,6 +2271,16 @@ TRACK.modules.push({
        "term": "Alert fatigue",
        "def": "The tendency of people to ignore alerts when too many are false or irrelevant."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Anomalies are rare and different: point, contextual or collective.",
+      "Start unsupervised (isolation forest, reconstruction error), then learn from analyst labels.",
+      "Compare each record with its own entity history, not only with the population.",
+      "Rank alerts to fit review capacity, and measure precision at that capacity."
      ]
     },
     {
@@ -2035,6 +2396,117 @@ TRACK.modules.push({
        "More engineering complexity"
       ]
      ]
+    },
+    {
+     "type": "text",
+     "text": "Large catalogues use **two stages**. **Retrieval** narrows millions of items to a few hundred candidates, often with a two-tower model that embeds users and items in the same vector space and an **approximate nearest-neighbour (ANN)** index that finds the closest item vectors in milliseconds. **Ranking** then scores those candidates with a richer model and many features, and a final re-ranking step adds diversity, freshness and business rules."
+    },
+    {
+     "type": "topology",
+     "title": "A two-stage recommender in production",
+     "nodes": [
+      {
+       "id": "vi",
+       "kind": "db",
+       "label": "Vector index",
+       "sub": "item embeddings",
+       "x": 1,
+       "y": 1
+      },
+      {
+       "id": "fs",
+       "kind": "db",
+       "label": "Feature store",
+       "sub": "user and item features",
+       "x": 3.5,
+       "y": 1
+      },
+      {
+       "id": "log",
+       "kind": "storage",
+       "label": "Event log",
+       "sub": "impressions, clicks",
+       "x": 6,
+       "y": 1
+      },
+      {
+       "id": "ret",
+       "kind": "process",
+       "label": "Retrieval",
+       "sub": "~500 candidates",
+       "x": 1,
+       "y": 3
+      },
+      {
+       "id": "rank",
+       "kind": "model",
+       "label": "Ranking model",
+       "sub": "scores candidates",
+       "x": 3.5,
+       "y": 3
+      },
+      {
+       "id": "rr",
+       "kind": "process",
+       "label": "Re-ranking",
+       "sub": "diversity, rules",
+       "x": 6,
+       "y": 3
+      },
+      {
+       "id": "app",
+       "kind": "phone",
+       "label": "Shopping app",
+       "sub": "user session",
+       "x": 3.5,
+       "y": 5.5
+      }
+     ],
+     "links": [
+      {
+       "a": "app",
+       "b": "ret",
+       "label": "request"
+      },
+      {
+       "a": "ret",
+       "b": "vi",
+       "label": "ANN search"
+      },
+      {
+       "a": "ret",
+       "b": "rank",
+       "label": "candidates"
+      },
+      {
+       "a": "rank",
+       "b": "fs",
+       "label": "features"
+      },
+      {
+       "a": "rank",
+       "b": "rr",
+       "label": "scores"
+      },
+      {
+       "a": "rr",
+       "b": "app",
+       "label": "top 10"
+      },
+      {
+       "a": "app",
+       "b": "log",
+       "label": "clicks",
+       "style": "dashed"
+      },
+      {
+       "a": "log",
+       "b": "fs",
+       "label": "training",
+       "style": "dashed"
+      }
+     ],
+     "caption": "Cheap retrieval keeps latency low, the ranking model spends compute only on candidates, and logged impressions and clicks feed the next training run. Logging what was shown, not just what was clicked, is what makes later evaluation possible."
     },
     {
      "type": "formula",
@@ -2215,6 +2687,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Recommenders fill in a sparse user × item matrix from explicit or implicit feedback.",
+      "Popularity is a strong baseline; content-based methods solve item cold start; collaborative filtering finds non-obvious links.",
+      "At scale, embedding-based retrieval with ANN search feeds a richer ranking model.",
+      "Watch feedback loops and popularity bias; confirm offline gains with online experiments."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -2293,8 +2775,9 @@ TRACK.modules.push({
      "text": "Supervised learning is told the right answer. **Reinforcement learning (RL)** is not: an agent takes actions, sees what happens and receives rewards, and must discover which actions lead to the most reward over time. RL powers game-playing systems, robotics, some recommendation and pricing systems, and the fine-tuning of language models from human preferences."
     },
     {
-     "type": "flow",
+     "type": "cycle",
      "title": "The reinforcement learning loop",
+     "center": "Agent and environment",
      "items": [
       {
        "label": "State",
@@ -2320,7 +2803,8 @@ TRACK.modules.push({
        "label": "Learn",
        "text": "Update the policy to get more reward"
       }
-     ]
+     ],
+     "caption": "The agent never sees the right answer, only rewards that may arrive late. Learning means adjusting the policy so that, over many turns of this loop, total discounted reward rises."
     },
     {
      "type": "formula",
@@ -2401,6 +2885,12 @@ TRACK.modules.push({
      "kind": "warning",
      "text": "An agent optimises exactly the reward it is given. Reward a call-centre routing agent for 'short calls' and it may learn to transfer difficult customers away. Specify rewards that reflect the true goal, add constraints for safety, and test in simulation before any real-world exploration.",
      "title": "Reward design is everything"
+    },
+    {
+     "type": "callout",
+     "kind": "insight",
+     "title": "Reward learning in language models",
+     "text": "Reinforcement learning ideas also shape modern chat models. After pre-training, models are tuned on human or model-generated preference comparisons, either by training a reward model and optimising against it with RL (RLHF) or with direct preference methods such as DPO that learn from the preference pairs without a separate reward model. The same warning applies: the model optimises the measured preference, which can reward confident or flattering answers over correct ones."
     },
     {
      "type": "table",
@@ -2521,6 +3011,17 @@ TRACK.modules.push({
        "term": "Multi-armed bandit",
        "def": "A simplified RL problem with actions and immediate rewards but no state transitions."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "RL learns a policy from rewards through trial and error; rewards may be delayed.",
+      "Bandits handle immediate-reward choices and are widely practical; full RL suits sequential decisions with a simulator.",
+      "Balance exploration and exploitation, for example with ε-greedy.",
+      "An agent optimises exactly the reward given: design it carefully, add constraints and test in simulation.",
+      "Preference optimisation (RLHF, DPO) applies the same ideas, and the same risks, to language models."
      ]
     },
     {
@@ -2655,6 +3156,60 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Three activation functions side by side",
+     "labels": [
+      "−3",
+      "−2",
+      "−1",
+      "0",
+      "1",
+      "2",
+      "3"
+     ],
+     "yLabel": "Output",
+     "series": [
+      {
+       "name": "ReLU",
+       "values": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        3
+       ]
+      },
+      {
+       "name": "Sigmoid",
+       "values": [
+        0.047,
+        0.119,
+        0.269,
+        0.5,
+        0.731,
+        0.881,
+        0.953
+       ]
+      },
+      {
+       "name": "tanh",
+       "values": [
+        -0.995,
+        -0.964,
+        -0.762,
+        0.0,
+        0.762,
+        0.964,
+        0.995
+       ]
+      }
+     ],
+     "caption": "Computed values (x-axis: input z). Sigmoid and tanh flatten at both ends, so their gradients vanish for large |z|; ReLU keeps a constant slope for positive inputs, which is why it trains deep stacks more easily."
+    },
+    {
      "type": "steps",
      "title": "A forward pass by hand",
      "items": [
@@ -2679,6 +3234,85 @@ TRACK.modules.push({
        "text": "p = σ(3.0) ≈ 0.953, the predicted probability of the positive class."
       }
      ]
+    },
+    {
+     "type": "topology",
+     "title": "The worked forward pass as a network",
+     "nodes": [
+      {
+       "id": "x1",
+       "kind": "process",
+       "label": "x₁ = 1",
+       "sub": "input",
+       "x": 0,
+       "y": 1
+      },
+      {
+       "id": "x2",
+       "kind": "process",
+       "label": "x₂ = 2",
+       "sub": "input",
+       "x": 0,
+       "y": 5
+      },
+      {
+       "id": "h1",
+       "kind": "process",
+       "label": "h₁ = 2.5",
+       "sub": "ReLU(2.5 + 0)",
+       "x": 3.5,
+       "y": 1
+      },
+      {
+       "id": "h2",
+       "kind": "process",
+       "label": "h₂ = 0",
+       "sub": "ReLU(0 − 1)",
+       "x": 3.5,
+       "y": 5
+      },
+      {
+       "id": "out",
+       "kind": "model",
+       "label": "p ≈ 0.953",
+       "sub": "σ(3.0); bias 0.5",
+       "x": 7,
+       "y": 3
+      }
+     ],
+     "links": [
+      {
+       "a": "x1",
+       "b": "h1",
+       "label": "w = 0.5"
+      },
+      {
+       "a": "x1",
+       "b": "h2",
+       "aEnd": "w = −1"
+      },
+      {
+       "a": "x2",
+       "b": "h1",
+       "aEnd": "w = 1"
+      },
+      {
+       "a": "x2",
+       "b": "h2",
+       "label": "w = 0.5"
+      },
+      {
+       "a": "h1",
+       "b": "out",
+       "label": "w = 1"
+      },
+      {
+       "a": "h2",
+       "b": "out",
+       "label": "w = −2"
+      }
+     ],
+     "caption": "Each arrow is one weight from the matrices W₁ and W₂, and each hidden node adds its bias before ReLU. Because h₂ is zero, its −2 weight contributes nothing to this prediction."
     },
     {
      "type": "cli",
@@ -2817,6 +3451,17 @@ TRACK.modules.push({
        "term": "Multi-label classification",
        "def": "A task where each example can belong to several classes at once."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "A layer is a matrix multiplication plus bias followed by a non-linear activation.",
+      "Without activations, any depth collapses into one linear model.",
+      "ReLU-family activations are the default in hidden layers; match the output layer and loss to the task.",
+      "A dense layer has d_in × d_out + d_out parameters.",
+      "On modest tabular data, gradient-boosted trees usually beat neural networks."
      ]
     },
     {
@@ -2986,6 +3631,49 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Overfitting in accuracy curves (illustrative)",
+     "labels": [
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "15"
+     ],
+     "unit": "%",
+     "yLabel": "Accuracy",
+     "series": [
+      {
+       "name": "Training",
+       "values": [
+        70,
+        84,
+        91,
+        95,
+        97,
+        98,
+        99
+       ]
+      },
+      {
+       "name": "Validation",
+       "values": [
+        68,
+        80,
+        88,
+        86,
+        85,
+        84,
+        83
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: epoch). Validation accuracy peaks early while training accuracy keeps rising: keep the best checkpoint, then use augmentation, dropout, weight decay or a pre-trained start to close the gap."
+    },
+    {
      "type": "cli",
      "title": "A small neural network with early stopping",
      "device": "Python notebook",
@@ -3037,7 +3725,7 @@ TRACK.modules.push({
     {
      "type": "callout",
      "kind": "pro",
-     "text": "Training large networks costs money, time and energy. Start small, use pre-trained models, use mixed precision, stop runs early when they are clearly worse, and record GPU-hours per experiment. A model that is 0.2% better but needs ten times the compute may not be worth it.",
+     "text": "Training large networks costs money, time and energy. Start small, use pre-trained models, train in mixed precision (16-bit formats where the hardware supports them), stop runs early when they are clearly worse, and record accelerator-hours and, where available, energy per experiment. A model that is 0.2% better but needs ten times the compute may not be worth it.",
      "title": "Compute and carbon are real costs"
     },
     {
@@ -3102,6 +3790,17 @@ TRACK.modules.push({
        "term": "Checkpoint",
        "def": "A saved copy of model weights at a point in training."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Backpropagation applies the chain rule to compute every gradient efficiently.",
+      "Healthy gradients need good initialisation, ReLU-family activations, normalisation and residual connections.",
+      "Regularise with weight decay, dropout, augmentation, early stopping and transfer learning.",
+      "Start from a standard recipe (AdamW, sensible learning rate) and track curves every epoch.",
+      "Record compute and energy; small gains may not justify large costs."
      ]
     },
     {
@@ -3303,6 +4002,47 @@ TRACK.modules.push({
      "title": "Image data practice"
     },
     {
+     "type": "sequence",
+     "title": "A defect model on the factory line",
+     "actors": [
+      "Line camera",
+      "Edge model",
+      "Inspector",
+      "Training data store"
+     ],
+     "steps": [
+      {
+       "from": 0,
+       "to": 1,
+       "label": "Image of the next fabric section"
+      },
+      {
+       "from": 1,
+       "to": 1,
+       "label": "Score defect classes",
+       "note": "on-device, no network needed"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Alert: 'hole', p = 0.91, with crop"
+      },
+      {
+       "from": 2,
+       "to": 1,
+       "label": "Confirm or reject",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 3,
+       "label": "Store image and verdict",
+       "note": "hard examples for retraining"
+      }
+     ],
+     "caption": "The model assists the inspector rather than replacing them, and every confirmed or rejected alert becomes a new label. Rejected alerts are the most valuable examples for the next training run."
+    },
+    {
      "type": "case",
      "title": "Fabric defect detection on a factory line",
      "context": "A knitwear factory in Gazipur inspects fabric rolls by eye. Inspectors miss about 15% of defects late in shifts. The factory has a camera over the line and 2,400 labelled images (1,900 'OK', 500 with holes, stains or broken yarn), all from one machine, taken over two weeks.",
@@ -3375,6 +4115,17 @@ TRACK.modules.push({
        "term": "Transfer learning",
        "def": "Reusing a model trained on one task as the starting point for another."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Convolutions share small filters across positions, making CNNs efficient for images.",
+      "Output size = ⌊(n + 2p − k) ÷ s⌋ + 1; parameters = (k × k × C_in + 1) × C_out.",
+      "Transfer learning from a pre-trained backbone is the default for business image tasks.",
+      "Augment only in label-preserving ways, and split by source to avoid near-duplicate leakage.",
+      "Check saliency maps for shortcuts and feed hard production examples back into training."
      ]
     },
     {
@@ -3504,6 +4255,38 @@ TRACK.modules.push({
      "note": "With no new input, the state shrinks at each step. Over long sequences this fading, and the matching vanishing gradients, is what gated units and attention were designed to overcome."
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "A simple RNN forgetting its first input",
+     "labels": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "yLabel": "Hidden state h_t",
+     "series": [
+      {
+       "name": "h_t",
+       "values": [
+        0.462,
+        0.354,
+        0.276,
+        0.217,
+        0.172,
+        0.137,
+        0.109,
+        0.087
+       ]
+      }
+     ],
+     "caption": "Computed with W_x = 0.5, W_h = 0.8 and inputs 1, 0, 0, … (x-axis: time step). The memory of the first input shrinks at every step; gated units and attention were designed to keep it."
+    },
+    {
      "type": "table",
      "title": "Sequence model families",
      "head": [
@@ -3564,6 +4347,33 @@ TRACK.modules.push({
        "text": "Seasonal naive and simple exponential smoothing must be beaten."
       }
      ]
+    },
+    {
+     "type": "timeline",
+     "title": "Rolling-origin evaluation for a 7-day forecast",
+     "items": [
+      {
+       "when": "Fold 1",
+       "label": "Train to 31 Jan",
+       "text": "Forecast 1–7 Feb and score it."
+      },
+      {
+       "when": "Fold 2",
+       "label": "Train to 7 Feb",
+       "text": "Forecast 8–14 Feb."
+      },
+      {
+       "when": "Fold 3",
+       "label": "Train to 14 Feb",
+       "text": "Forecast 15–21 Feb."
+      },
+      {
+       "when": "Fold 4",
+       "label": "Train to 21 Feb",
+       "text": "Forecast 22–28 Feb."
+      }
+     ],
+     "caption": "The training origin moves forward and the model is always scored on the window just after it, exactly as it will be used. Average the fold errors and compare them with a seasonal naive baseline."
     },
     {
      "type": "callout",
@@ -3665,6 +4475,16 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Tokens and other discrete items become dense, learned embedding vectors.",
+      "Plain RNNs forget long-range information; LSTMs, GRUs and attention address this.",
+      "Forecasting works well as supervised learning with lag and known-future features.",
+      "Validate forecasts in time order and always beat a seasonal naive baseline."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -3729,8 +4549,8 @@ TRACK.modules.push({
   {
    "id": "m7-l5",
    "title": "Transformers, Attention and Foundation Models",
-   "subtitle": "The architecture behind modern language and vision models, at an intuitive level",
-   "minutes": 28,
+   "subtitle": "The architecture behind modern language and vision models, and how to adapt, ground, align and shrink them",
+   "minutes": 34,
    "objectives": [
     "Explain self-attention and compute it for a tiny example",
     "Describe encoder, decoder and encoder–decoder transformers and their uses",
@@ -3815,7 +4635,7 @@ TRACK.modules.push({
       {
        "label": "Position information",
        "parts": [
-        "Learned or fixed positional encodings",
+        "Learned, fixed or rotary (relative) position encodings",
         "Gives the model word order"
        ]
       },
@@ -3844,7 +4664,7 @@ TRACK.modules.push({
       [
        "Decoder-only",
        "Only earlier tokens (causal)",
-       "Text generation, chat assistants, code completion"
+       "Text generation, chat assistants, code; the design of most large language models"
       ],
       [
        "Encoder–decoder",
@@ -3855,8 +4675,17 @@ TRACK.modules.push({
        "Vision transformer",
        "Image patches as tokens",
        "Image classification and detection at scale"
+      ],
+      [
+       "Mixture-of-experts (variant)",
+       "Routes each token to a few expert feed-forward blocks",
+       "Very large models with lower compute per token"
       ]
      ]
+    },
+    {
+     "type": "text",
+     "text": "Modern chat models are built in stages. Self-supervised **pre-training** on very large text, code and often image collections teaches next-token prediction. **Supervised fine-tuning** on instruction–response examples teaches the model to follow requests. **Preference optimisation** then learns from comparisons of better and worse answers, either through a reward model and reinforcement learning (RLHF) or with direct methods such as DPO. Evaluation and red-teaming come before release, and monitoring continues after it."
     },
     {
      "type": "compare",
@@ -3881,7 +4710,7 @@ TRACK.modules.push({
       {
        "title": "Parameter-efficient fine-tuning",
        "items": [
-        "Train small added matrices (adapters, low-rank updates)",
+        "Train small added matrices (adapters, low-rank updates such as LoRA)",
         "Far less memory and storage",
         "Close to full fine-tuning quality on many tasks"
        ]
@@ -3889,9 +4718,128 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "text",
+     "text": "**Retrieval-augmented generation (RAG)** grounds answers in your own documents without changing the model. Documents are split into chunks, each chunk is embedded, and the vectors go into an index built for fast approximate nearest-neighbour search. At question time the closest chunks are retrieved and placed in the prompt. RAG suits knowledge that changes often or answers that must cite sources; fine-tuning suits a consistent format, style or task behaviour."
+    },
+    {
+     "type": "sequence",
+     "title": "Retrieval-augmented generation, step by step",
+     "actors": [
+      "User",
+      "Application",
+      "Embedding model",
+      "Vector index",
+      "Language model"
+     ],
+     "steps": [
+      {
+       "from": 0,
+       "to": 1,
+       "label": "Question about leave policy"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Embed the question"
+      },
+      {
+       "from": 2,
+       "to": 1,
+       "label": "Query vector",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 3,
+       "label": "Find top-k nearest chunks",
+       "note": "approximate nearest neighbours"
+      },
+      {
+       "from": 3,
+       "to": 1,
+       "label": "5 passages with source IDs",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 4,
+       "label": "Instructions + passages + question"
+      },
+      {
+       "from": 4,
+       "to": 1,
+       "label": "Answer citing the passages",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 0,
+       "label": "Answer with source links",
+       "reply": true
+      }
+     ],
+     "caption": "Two separate things can fail: retrieval can miss the right passage, and generation can ignore or misread it. Evaluate them separately, and treat retrieved text as untrusted input that may contain injected instructions."
+    },
+    {
+     "type": "tree",
+     "title": "Choosing how to adapt a foundation model",
+     "root": {
+      "label": "What is missing?",
+      "children": [
+       {
+        "label": "Clear task instructions",
+        "text": "Prompting with a few examples"
+       },
+       {
+        "label": "Current or private knowledge",
+        "text": "Retrieval-augmented generation"
+       },
+       {
+        "label": "Consistent format or skill",
+        "text": "Parameter-efficient fine-tuning (e.g. LoRA)"
+       },
+       {
+        "label": "Preferred behaviour and tone",
+        "text": "Preference optimisation (RLHF, DPO-style)"
+       },
+       {
+        "label": "Lower cost or latency",
+        "text": "Distillation, quantisation or a smaller model"
+       }
+      ]
+     },
+     "caption": "Try the cheapest branch that addresses the actual gap first, and measure each step against the same evaluation set. The branches combine: a quantised, LoRA-tuned model can still use retrieval."
+    },
+    {
+     "type": "formula",
+     "title": "Efficient adaptation and inference arithmetic",
+     "items": [
+      {
+       "name": "LoRA update",
+       "expr": "W′ = W + BA, with B (d × r) and A (r × k), r ≪ d, k",
+       "meaning": "The pre-trained W stays frozen; only the small matrices B and A are trained."
+      },
+      {
+       "name": "LoRA parameters",
+       "expr": "d = k = 4,096, r = 8: r(d + k) = 65,536 versus d × k = 16,777,216",
+       "meaning": "About 0.4% of the weights in that matrix are trained, so each task adapter is small to store and swap."
+      },
+      {
+       "name": "Weight memory",
+       "expr": "memory ≈ parameters × bytes per parameter",
+       "meaning": "7 billion parameters: about 14 GB at 16-bit, 7 GB at 8-bit, 3.5 GB at 4-bit, before activations and the attention cache."
+      },
+      {
+       "name": "Distillation loss",
+       "expr": "L = α · CE(y, p_student) + (1 − α) · T² · KL(p_teacher,T ‖ p_student,T)",
+       "meaning": "A small student learns from the labels and from the teacher's softened probabilities at temperature T."
+      }
+     ]
+    },
+    {
      "type": "callout",
      "kind": "warning",
-     "text": "Pre-trained models can produce fluent but wrong output, reflect biases in their training text, and perform unevenly across languages such as Bangla. Evaluate on your own labelled examples, check performance by language and group, protect personal data in prompts and logs, and keep a simpler baseline for comparison.",
+     "text": "Pre-trained models can produce fluent but wrong output, reflect biases in their training text and perform unevenly across languages such as Bangla. Public benchmark scores may be inflated by contamination and rarely match your task, so build a versioned evaluation set from real, recent cases. Score retrieval and generation separately; if another model acts as judge, check it against human ratings, because judges can favour longer answers, their own style or the first option shown. Rerun the set after every prompt, model or data change, check results by language and group, protect personal data in prompts and logs, and keep a simpler baseline for comparison.",
      "title": "Large models still need evaluation"
     },
     {
@@ -3929,8 +4877,9 @@ TRACK.modules.push({
       "Performance is checked separately for each language, region and user group",
       "Licence terms allow the intended commercial use",
       "Personal and confidential data handling in prompts, logs and fine-tuning is approved",
-      "Latency and cost per prediction fit the budget at expected volume",
+      "Latency, cost and energy per request fit the budget at expected volume; a smaller, distilled or quantised model has been tried",
       "Failure modes such as fluent but wrong output have mitigations and human review",
+      "User inputs and retrieved documents are treated as untrusted, with prompt-injection tests",
       "A rollback plan exists if quality drops after an update of the underlying model"
      ]
     },
@@ -3968,7 +4917,38 @@ TRACK.modules.push({
       {
        "term": "Parameter-efficient fine-tuning",
        "def": "Adapting a large model by training a small number of added or selected parameters."
+      },
+      {
+       "term": "Retrieval-augmented generation (RAG)",
+       "def": "Retrieving relevant passages from an index of your documents and adding them to the prompt so a language model answers from them."
+      },
+      {
+       "term": "LoRA (low-rank adaptation)",
+       "def": "A parameter-efficient fine-tuning method that freezes pre-trained weights and trains small low-rank matrices added to them."
+      },
+      {
+       "term": "Preference optimisation",
+       "def": "Tuning a model on comparisons of better and worse outputs, via a reward model and RL (RLHF) or directly (for example DPO)."
+      },
+      {
+       "term": "Quantisation",
+       "def": "Storing and computing with lower-precision numbers, such as 8-bit or 4-bit weights, to cut memory and speed up inference."
+      },
+      {
+       "term": "Knowledge distillation",
+       "def": "Training a smaller student model to imitate a larger teacher model's outputs."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Attention lets every token weigh every other token; cost grows with the square of the context length.",
+      "Large language models are pre-trained, instruction-tuned and preference-optimised before release.",
+      "Adapt with the cheapest method that fixes the real gap: prompting, RAG, LoRA-style fine-tuning or preference tuning.",
+      "Distillation and quantisation cut cost and latency; measure the quality they give up.",
+      "Evaluate on private, versioned, task-specific sets, separately for retrieval and generation, and by language and group."
      ]
     },
     {
@@ -4028,6 +5008,17 @@ TRACK.modules.push({
        ],
        "answer": 1,
        "explain": "Small trainable additions save memory and storage with near full quality."
+      },
+      {
+       "q": "A team moves a 7-billion-parameter model from 16-bit to 4-bit weights. Roughly how much memory do the weights alone now need?",
+       "options": [
+        "About 14 GB",
+        "About 3.5 GB",
+        "About 28 GB",
+        "About 0.9 GB"
+       ],
+       "answer": 1,
+       "explain": "Weight memory is roughly parameters × bytes per parameter: 7 billion × 0.5 bytes ≈ 3.5 GB. At 16-bit it was about 14 GB. Activations and the attention cache need extra memory on top."
       }
      ]
     }
@@ -4126,6 +5117,58 @@ TRACK.modules.push({
      "title": "Training–serving skew"
     },
     {
+     "type": "sequence",
+     "title": "Online scoring of a wallet transfer",
+     "actors": [
+      "Wallet app",
+      "Scoring API",
+      "Online feature store",
+      "Model service",
+      "Prediction log"
+     ],
+     "steps": [
+      {
+       "from": 0,
+       "to": 1,
+       "label": "Transfer request (customer, amount)"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Get features for customer ID"
+      },
+      {
+       "from": 2,
+       "to": 1,
+       "label": "30-day counts, device age, …",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 3,
+       "label": "Score the feature vector"
+      },
+      {
+       "from": 3,
+       "to": 1,
+       "label": "p = 0.04, model v12",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 4,
+       "label": "Log inputs, score, version, decision"
+      },
+      {
+       "from": 1,
+       "to": 0,
+       "label": "Approve (within the 150 ms budget)",
+       "reply": true
+      }
+     ],
+     "caption": "The online store serves the same feature definitions used to build training data, which prevents skew. Logging inputs, score and model version with each decision makes any single outcome explainable later."
+    },
+    {
      "type": "compare",
      "title": "Release strategies",
      "columns": [
@@ -4154,6 +5197,102 @@ TRACK.modules.push({
        ]
       }
      ]
+    },
+    {
+     "type": "topology",
+     "title": "A canary release with automatic rollback",
+     "nodes": [
+      {
+       "id": "reg",
+       "kind": "storage",
+       "label": "Model registry",
+       "sub": "v12 (current), v13 (candidate)",
+       "x": 3.5,
+       "y": 0
+      },
+      {
+       "id": "v12",
+       "kind": "model",
+       "label": "Model v12",
+       "sub": "current, 95% of traffic",
+       "x": 1.5,
+       "y": 1.5
+      },
+      {
+       "id": "v13",
+       "kind": "model",
+       "label": "Model v13",
+       "sub": "canary, 5% of traffic",
+       "x": 5.5,
+       "y": 1.5
+      },
+      {
+       "id": "gw",
+       "kind": "lb",
+       "label": "Traffic router",
+       "sub": "weighted split",
+       "x": 3.5,
+       "y": 3.5
+      },
+      {
+       "id": "mon",
+       "kind": "monitor",
+       "label": "Monitoring",
+       "sub": "errors, p99, block rate",
+       "x": 7,
+       "y": 3.5
+      },
+      {
+       "id": "cl",
+       "kind": "user",
+       "label": "Customers",
+       "sub": "live requests",
+       "x": 3.5,
+       "y": 5.5
+      }
+     ],
+     "links": [
+      {
+       "a": "cl",
+       "b": "gw",
+       "label": "requests"
+      },
+      {
+       "a": "gw",
+       "b": "v12",
+       "label": "95%"
+      },
+      {
+       "a": "gw",
+       "b": "v13",
+       "label": "5%"
+      },
+      {
+       "a": "reg",
+       "b": "v12",
+       "label": "deploy",
+       "style": "dashed"
+      },
+      {
+       "a": "reg",
+       "b": "v13",
+       "label": "deploy",
+       "style": "dashed"
+      },
+      {
+       "a": "v13",
+       "b": "mon",
+       "label": "metrics",
+       "style": "dashed"
+      },
+      {
+       "a": "mon",
+       "b": "gw",
+       "label": "rollback",
+       "style": "bold"
+      }
+     ],
+     "caption": "Only 5% of customers meet the new version at first. If errors, latency or block rate cross agreed thresholds, monitoring tells the router to send all traffic back to v12 within minutes."
     },
     {
      "type": "formula",
@@ -4300,6 +5439,16 @@ TRACK.modules.push({
        "term": "Blue–green deployment",
        "def": "Running two production environments and switching traffic between them for instant rollback."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Pick the serving pattern from latency needs: batch, online, streaming or edge.",
+      "Serialise and version the whole pipeline, and share feature definitions between training and serving.",
+      "Release in stages: shadow, then canary with automatic rollback, then A/B tests for business impact.",
+      "Plan capacity with arrival rate × latency and report p95/p99 latency, not averages."
      ]
     },
     {
@@ -4484,6 +5633,72 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "chart",
+     "kind": "line",
+     "title": "Weekly PSI for the 'transaction amount' feature (illustrative)",
+     "labels": [
+      "W1",
+      "W2",
+      "W3",
+      "W4",
+      "W5",
+      "W6",
+      "W7",
+      "W8",
+      "W9",
+      "W10"
+     ],
+     "yLabel": "PSI",
+     "series": [
+      {
+       "name": "PSI",
+       "values": [
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.09,
+        0.12,
+        0.16,
+        0.21,
+        0.27,
+        0.31
+       ]
+      },
+      {
+       "name": "Action threshold",
+       "values": [
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25
+       ]
+      },
+      {
+       "name": "Watch threshold",
+       "values": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+       ]
+      }
+     ],
+     "caption": "Illustrative numbers (x-axis: week). A slow climb through the watch zone gives weeks of warning before the action threshold; a sudden jump in a single week more often signals an upstream data change."
+    },
+    {
      "type": "cli",
      "title": "Computing PSI for a shifted feature",
      "device": "Python notebook",
@@ -4529,6 +5744,58 @@ TRACK.modules.push({
      "kind": "pro",
      "text": "Decide in advance when to retrain: on a schedule (monthly), on a trigger (PSI above 0.25 on key features, or recall below an agreed floor), or both. Always validate a retrained model against the current one on recent data before promoting it; retraining on corrupted data can make things worse.",
      "title": "Retraining policy"
+    },
+    {
+     "type": "sequence",
+     "title": "From drift alert to a safely promoted model",
+     "actors": [
+      "Monitor",
+      "Model owner",
+      "Training pipeline",
+      "Model registry",
+      "Serving"
+     ],
+     "steps": [
+      {
+       "from": 0,
+       "to": 1,
+       "label": "Alert: PSI 0.27 on 'amount', recall dip"
+      },
+      {
+       "from": 1,
+       "to": 1,
+       "label": "Root cause: data bug or real shift?",
+       "note": "fix bugs upstream, do not retrain"
+      },
+      {
+       "from": 1,
+       "to": 2,
+       "label": "Trigger retrain on a recent window"
+      },
+      {
+       "from": 2,
+       "to": 3,
+       "label": "Register candidate v13 with metrics"
+      },
+      {
+       "from": 3,
+       "to": 1,
+       "label": "Quality gates passed versus v12",
+       "reply": true
+      },
+      {
+       "from": 1,
+       "to": 4,
+       "label": "Promote via shadow, then canary"
+      },
+      {
+       "from": 4,
+       "to": 0,
+       "label": "Metrics for the new version",
+       "reply": true
+      }
+     ],
+     "caption": "A trigger starts an investigation, not an automatic swap. Retraining is used only for genuine shifts, and the new model must beat the current one on recent data before it is staged."
     },
     {
      "type": "scenario",
@@ -4627,6 +5894,17 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Monitor in layers: system health, input data, predictions, performance and business outcomes.",
+      "Covariate, label and concept drift differ; only some are visible before labels arrive.",
+      "PSI flags distribution change; investigate the cause before retraining.",
+      "Set retraining triggers and owners in advance, and validate every retrained model before promotion.",
+      "Track performance by segment, since averages hide local failures."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -4705,8 +5983,9 @@ TRACK.modules.push({
      "text": "**MLOps** applies the discipline of software engineering and operations to machine learning. The goal is simple to state: any model in production can be traced to exactly the data, code and settings that produced it; it can be rebuilt automatically; it is tested before release; and it can be rolled back in minutes."
     },
     {
-     "type": "flow",
+     "type": "cycle",
      "title": "The MLOps life cycle",
+     "center": "MLOps",
      "items": [
       {
        "label": "Data",
@@ -4736,7 +6015,8 @@ TRACK.modules.push({
        "label": "Retrain",
        "text": "Scheduled or triggered"
       }
-     ]
+     ],
+     "caption": "Retraining feeds straight back into data and experiments, so the life cycle is a loop. Automation is valuable exactly where the loop turns often."
     },
     {
      "type": "layers",
@@ -4783,6 +6063,137 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "topology",
+     "title": "Training and serving around a feature store and registry",
+     "nodes": [
+      {
+       "id": "src",
+       "kind": "db",
+       "label": "Source systems",
+       "sub": "transactions, CRM",
+       "x": 0,
+       "y": 0.5
+      },
+      {
+       "id": "fp",
+       "kind": "process",
+       "label": "Feature pipelines",
+       "sub": "one definition per feature",
+       "x": 2,
+       "y": 0.5
+      },
+      {
+       "id": "off",
+       "kind": "storage",
+       "label": "Offline store",
+       "sub": "history, point-in-time joins",
+       "x": 4,
+       "y": 0
+      },
+      {
+       "id": "on",
+       "kind": "db",
+       "label": "Online store",
+       "sub": "latest values, fast reads",
+       "x": 4,
+       "y": 2
+      },
+      {
+       "id": "tr",
+       "kind": "process",
+       "label": "Training pipeline",
+       "sub": "CI: tests and quality gates",
+       "x": 6,
+       "y": 0
+      },
+      {
+       "id": "reg",
+       "kind": "storage",
+       "label": "Model registry",
+       "sub": "versions, lineage, approval",
+       "x": 6,
+       "y": 2
+      },
+      {
+       "id": "svc",
+       "kind": "api",
+       "label": "Scoring service",
+       "sub": "online inference",
+       "x": 5,
+       "y": 4
+      },
+      {
+       "id": "mon",
+       "kind": "monitor",
+       "label": "Monitoring",
+       "sub": "drift, performance, cost",
+       "x": 7,
+       "y": 4
+      },
+      {
+       "id": "app",
+       "kind": "phone",
+       "label": "Client app",
+       "sub": "requests",
+       "x": 3,
+       "y": 5.5
+      }
+     ],
+     "links": [
+      {
+       "a": "src",
+       "b": "fp"
+      },
+      {
+       "a": "fp",
+       "b": "off",
+       "label": "backfill"
+      },
+      {
+       "a": "fp",
+       "b": "on",
+       "label": "materialise"
+      },
+      {
+       "a": "off",
+       "b": "tr",
+       "label": "training sets"
+      },
+      {
+       "a": "tr",
+       "b": "reg",
+       "label": "register"
+      },
+      {
+       "a": "reg",
+       "b": "svc",
+       "label": "deploy"
+      },
+      {
+       "a": "on",
+       "b": "svc",
+       "label": "features"
+      },
+      {
+       "a": "app",
+       "b": "svc",
+       "label": "request"
+      },
+      {
+       "a": "svc",
+       "b": "mon",
+       "label": "logs"
+      },
+      {
+       "a": "mon",
+       "b": "tr",
+       "label": "retrain",
+       "style": "dashed"
+      }
+     ],
+     "caption": "One feature definition fills both stores, so training and serving see identical values. The registry is the only route from training to serving, which gives every deployed model a traceable lineage."
+    },
+    {
      "type": "table",
      "title": "Testing ML systems",
      "head": [
@@ -4815,6 +6226,11 @@ TRACK.modules.push({
        "Operational tests",
        "Latency, memory, load, failure handling",
        "p99 < 150 ms at 300 requests/s; fallback works when the model times out"
+      ],
+      [
+       "Language-model application tests",
+       "Prompts, retrieval and outputs against a versioned evaluation set",
+       "Answer accuracy and citation support on 200 reference questions after every prompt or model change; prompt-injection test cases"
       ]
      ]
     },
@@ -4952,6 +6368,17 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Any production model should trace to exact data, code, environment and settings.",
+      "Automate the pipeline and block bad releases with data tests, quality gates and behavioural tests.",
+      "A feature store and a model registry connect training and serving consistently.",
+      "For language-model applications, version prompts, retrieval indexes and evaluation sets like code.",
+      "Mature teams retrain on triggers and can roll back in minutes."
+     ]
+    },
+    {
      "type": "quiz",
      "items": [
       {
@@ -5061,6 +6488,49 @@ TRACK.modules.push({
      ]
     },
     {
+     "type": "matrix",
+     "title": "Proportionate oversight",
+     "x": "Degree of automation (low → high)",
+     "y": "Potential harm (low → high)",
+     "quadrants": [
+      {
+       "title": "Decision support, strong review",
+       "items": [
+        "A professional decides",
+        "Validation by group",
+        "Reviewer training",
+        "Example: sepsis alert"
+       ]
+      },
+      {
+       "title": "Strictest controls or keep a human",
+       "items": [
+        "Impact assessment",
+        "Human oversight and appeal",
+        "Continuous monitoring",
+        "Full documentation"
+       ]
+      },
+      {
+       "title": "Light touch",
+       "items": [
+        "Basic testing",
+        "Named owner",
+        "Example: ordering routine letters"
+       ]
+      },
+      {
+       "title": "Automate with guardrails",
+       "items": [
+        "Quality gates",
+        "Rollback",
+        "Spot checks"
+       ]
+      }
+     ],
+     "caption": "Controls should grow with the harm a system can cause and with how little a human checks it. The top-right cell is where regulation is strictest and where automation most needs justifying."
+    },
+    {
      "type": "formula",
      "title": "Group fairness measures",
      "items": [
@@ -5165,7 +6635,8 @@ TRACK.modules.push({
         "Data poisoning: validate and track training data sources",
         "Adversarial inputs: test robustness, rate-limit, monitor",
         "Model extraction and inversion: limit output detail, authenticate APIs",
-        "Secrets and supply chain: scan dependencies, protect model files"
+        "Secrets and supply chain: scan dependencies, protect model files",
+        "Language-model apps: prompt injection and data leakage through outputs; treat inputs and retrieved text as untrusted"
        ]
       }
      ]
@@ -5189,6 +6660,52 @@ TRACK.modules.push({
       ]
      ],
      "rows": 8
+    },
+    {
+     "type": "text",
+     "text": "Documentation travels with the system. A **datasheet for a dataset** records why and how the data was collected, its composition, labelling process, known gaps and permitted uses; a **model card** records intended use, performance by group, limitations and owners. Risk-based regulation expects similar evidence: the EU AI Act, for example, treats uses such as credit scoring, recruitment and access to essential services as high-risk, with duties for risk management, data governance, technical documentation, logging and human oversight."
+    },
+    {
+     "type": "timeline",
+     "title": "AI governance milestones a practitioner should know",
+     "items": [
+      {
+       "when": "Jan 2023",
+       "label": "NIST AI Risk Management Framework 1.0",
+       "text": "Voluntary framework: govern, map, measure, manage."
+      },
+      {
+       "when": "Dec 2023",
+       "label": "ISO/IEC 42001",
+       "text": "International standard for an AI management system."
+      },
+      {
+       "when": "Jul 2024",
+       "label": "NIST generative AI profile",
+       "text": "Companion to the framework for generative-model risks."
+      },
+      {
+       "when": "Aug 2024",
+       "label": "EU AI Act enters into force",
+       "text": "Risk-based rules that phase in over several years."
+      },
+      {
+       "when": "Feb 2025",
+       "label": "EU AI Act: prohibitions apply",
+       "text": "Banned practices, plus AI-literacy duties."
+      },
+      {
+       "when": "Aug 2025",
+       "label": "EU AI Act: general-purpose models",
+       "text": "Documentation and transparency duties for providers of general-purpose AI models."
+      },
+      {
+       "when": "From Aug 2026",
+       "label": "EU AI Act: high-risk systems",
+       "text": "Phased obligations; changes to these dates were proposed in late 2025, so check the current official timetable."
+      }
+     ],
+     "caption": "Even outside the EU, these documents shape procurement, audits and partner expectations. Use the dates for orientation and always confirm the current official text and any local law that applies."
     },
     {
      "type": "case",
@@ -5262,7 +6779,22 @@ TRACK.modules.push({
       {
        "term": "Human oversight",
        "def": "Arrangements that let people monitor, interpret, override or stop an automated system."
+      },
+      {
+       "term": "Datasheet for a dataset",
+       "def": "A document recording a dataset's purpose, collection, composition, labelling, known gaps and permitted uses."
       }
+     ]
+    },
+    {
+     "type": "keypoints",
+     "title": "Key takeaways",
+     "items": [
+      "Responsible ML covers fairness, transparency, privacy, security and accountability, in proportion to harm.",
+      "Measure fairness by group (selection rates, error rates, calibration); the criteria can conflict, so choose and document.",
+      "Unfairness enters through targets, data, proxy features, thresholds and feedback loops.",
+      "Datasheets and model cards travel with the system; regulation increasingly expects them.",
+      "Scale oversight with potential harm and the degree of automation."
      ]
     },
     {
@@ -5322,6 +6854,17 @@ TRACK.modules.push({
        ],
        "answer": 3,
        "explain": "It communicates essential facts to users and reviewers."
+      },
+      {
+       "q": "An auditor asks how a training dataset was collected, how it was labelled and which groups it under-represents. Which document should answer this?",
+       "options": [
+        "The model card",
+        "The release plan",
+        "The datasheet for the dataset",
+        "The monitoring plan"
+       ],
+       "answer": 2,
+       "explain": "A datasheet documents a dataset's purpose, collection, labelling, composition and known gaps. A model card covers the model's intended use and performance, while release and monitoring plans cover deployment."
       }
      ]
     }
@@ -5512,15 +7055,15 @@ TRACK.exam.push([
  },
  {
   "module": "m7",
-  "q": "A network has dense layers 300 → 100 → 10, including biases. How many parameters does it have?",
+  "q": "A team adds LoRA adapters of rank r = 16 to a frozen 2,048 × 2,048 weight matrix. How many trainable parameters does that matrix gain?",
   "options": [
-   "31,000",
-   "30,100",
-   "31,110",
-   "3,010"
+   "4,194,304",
+   "32,768",
+   "65,536",
+   "2,048"
   ],
   "answer": 2,
-  "explain": "300 × 100 + 100 = 30,100; 100 × 10 + 10 = 1,010; total 31,110."
+  "explain": "LoRA adds B (2,048 × 16) and A (16 × 2,048): r(d + k) = 16 × 4,096 = 65,536 parameters, about 1.6% of the 4,194,304 in the frozen matrix. 32,768 counts only one of the two matrices."
  },
  {
   "module": "m7",
@@ -5656,15 +7199,15 @@ TRACK.exam.push([
  },
  {
   "module": "m8",
-  "q": "A team wants to test whether a new recommender raises conversion from 5% by at least 0.5 percentage points. Using n ≈ 16p(1 − p) ÷ δ², roughly how many users per arm are needed?",
+  "q": "A support assistant built on a language model with retrieval was fine last month. After the vendor updated the underlying model, complaints about wrong answers rose. Which practice would have caught this before users did?",
   "options": [
-   "About 30,400",
-   "About 3,040",
-   "About 1,900",
-   "About 304,000"
+   "A versioned set of reference questions rerun as a release gate after every change",
+   "Raising the temperature so that answers become more varied and natural",
+   "Doubling the number of retrieved passages in every prompt",
+   "Checking the new model version's position on public leaderboards before switching over"
   ],
   "answer": 0,
-  "explain": "16 × 0.05 × 0.95 ÷ 0.005² = 0.76 ÷ 0.000025 = 30,400."
+  "explain": "A regression suite on your own reference questions detects quality drops caused by any upstream change. Leaderboards measure other tasks, and changing temperature or passage count does not test anything."
  },
  {
   "module": "m8",
